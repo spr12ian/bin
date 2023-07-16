@@ -22,6 +22,11 @@ Now that snap is installed
 ```
 install-snap-packages
 ```
+
+Every now and then refresh your snap packages
+```
+sudo snap refresh
+```
 ## How this repo was created
 
 On a new Linux user login:
