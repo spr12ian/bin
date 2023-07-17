@@ -40,10 +40,11 @@ On a new Linux user login:
 mkdir ~/bin
 cd ~/bin
 
-chmod u+x install*
-chmod u+x update*
+chmod u+x *
+chmod u-x README.md
 
 git init
 git add .
-git update-index --chmod=+x install-nodejs
+git update-index --chmod=+x *
+git update-index --chmod=-x README.md
 
