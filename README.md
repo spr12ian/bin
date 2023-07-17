@@ -48,3 +48,6 @@ git add .
 git update-index --chmod=+x *
 git update-index --chmod=-x README.md
 
+## To Do
+
+Why are brackets a problem for echo in the about script?

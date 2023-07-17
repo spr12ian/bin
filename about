@@ -1,9 +1,9 @@
 #!/bin/bash
 
 clear
-
-if [ $# == 0 ]; then     # if no arguments provided, prompt user
-    echo -n “What command(s) are you asking about?> “
+echo $#
+if [ $# -eq 0 ]; then     # if no arguments provided, prompt user
+    echo -n “What commands are you asking about?> “
     read args
 else
     args=$*
@@ -15,8 +15,8 @@ do
     echo -n “executable: “
     which $cmd
     echo -n “all files: “
-    whereis $cmd | sed “s/$cmd: //“
-    echo “function(s):”
+    whereis $cmd
+    echo “functions:”
     whatis $cmd
     echo “====================================================================”
 done
