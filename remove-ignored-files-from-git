@@ -2,10 +2,16 @@
 
 if [ -d .git ]; then 
   echo ".git folder exists"
-# git rm -r --cached . 
-# git add .
-# git commit -m 'Removed all files that are in the .gitignore' 
-# git push origin main
+
+  if [ -f .gitignore ]; then 
+    echo ".gitignore file exists"
+    git rm -r --cached . 
+    git add .
+    git commit -m 'Removed all files that are in the .gitignore' 
+    git push origin main
+  else
+    echo ".gitignore file does not exist"
+  fi
 else
   echo ".git folder does not exist"
 fi
