@@ -1,1 +1,19 @@
 #!/bin/bash
+
+# https://opensource.com/article/18/5/you-dont-know-bash-intro-bash-arrays
+
+gitFolders=(~/bin)
+gitFolders+=(~/projects/menu-planner)
+gitFolders+=(~/projects/spr12ian.github.io)
+gitFolders+=(~/projects/typescript-starter)
+
+for gitFolder in ${gitFolders[@]}; do
+  if [ -d $gitFolder ]; then
+    cd $gitFolder
+    pwd
+    git pull
+    remove-ignored-files-from-git
+  else
+    echo "$gitFolder folder does not exist"
+  fi
+done
