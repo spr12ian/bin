@@ -12,7 +12,7 @@ for gitFolder in ${gitFolders[@]}; do
     cd $gitFolder
     pwd
     git pull
-    remove-ignored-files-from-git
+    remove-ignored-files-from-git >/dev/null 2>&1
   else
     echo "$gitFolder folder does not exist"
   fi

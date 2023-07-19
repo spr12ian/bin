@@ -5,7 +5,7 @@ if [ -d .git ]; then
 
   if [ -f .gitignore ]; then 
     echo ".gitignore file exists"
-    git rm -r --cached . 
+    git rm -r --cached . >/dev/null
     git add .
     git commit -m 'Removed all files that are in the .gitignore' 
     git push origin main
