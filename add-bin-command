@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo $#
+
+chmod u+x *
+chmod u-x README.md
+
+git add .
+git update-index --chmod=+x *
+git update-index --chmod=-x README.md

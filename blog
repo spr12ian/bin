@@ -1,0 +1,11 @@
+#!/bin/bash
+
+update-linux
+
+focus-here
+
+cd ~/projects/spr12ian.github.io
+
+code .
+
+hugo server -D &
