@@ -1,6 +1,23 @@
 #!/bin/bash
 
-echo $#
+if [ $# -gt 1 ]; then
+    echo “Too many parameters!“
+    exit
+fi
+
+if [ $# -eq 0 ]; then     # if no arguments provided, prompt user
+    echo “What command should I add?“
+    read command
+fi
+
+if [ $# -eq 1 ]; then
+    command=$1
+fi
+
+echo $command
+
+touch $command
+exit
 
 chmod u+x *
 chmod u-x README.md
