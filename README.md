@@ -28,7 +28,7 @@ Every now and then refresh your snap packages
 sudo snap refresh
 ```
 
-To so Google App Script (GAS) development locally I use clasp
+To do Google App Script (GAS) development locally I use clasp
 ```
 install-clasp
 ```
