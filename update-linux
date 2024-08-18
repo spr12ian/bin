@@ -6,4 +6,5 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 sudo apt --purge autoremove -y
 
-lsb_release -a
+cat /etc/os-release
+hostnamectl
