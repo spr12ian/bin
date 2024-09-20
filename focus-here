@@ -4,16 +4,33 @@
 
 gitFolders=(~/bin)
 gitFolders+=(~/projects/menu-planner)
+gitFolders+=(~/projects/our-finances)
 gitFolders+=(~/projects/spr12ian.github.io)
 gitFolders+=(~/projects/typescript-starter)
 
 for gitFolder in ${gitFolders[@]}; do
-  if [ -d $gitFolder ]; then
-    cd $gitFolder
-    pwd
-    git pull
-    remove-ignored-files-from-git >/dev/null 2>&1
+  echo "Processing $gitFolder"
+  parentFolder=$(dirname "$gitFolder")
+  if [ ! -d $parentFolder ]; then
+    echo "$parentFolder folder does NOT exist"
   else
-    echo "$gitFolder folder does not exist"
+    echo "$parentFolder folder exists"
+    cd $parentFolder
+    pwd
+    if [ ! -d $gitFolder ]; then
+      echo "$gitFolder folder does NOT exist"
+      gitDir=$(basename "$gitFolder")
+      echo "Cloning $gitDir"
+      gh repo clone spr12ian/$gitDir
+    fi
+
+    if [ ! -d $gitFolder ]; then
+      echo "Clone failed. $gitFolder folder does NOT exist"
+    else
+      cd $gitFolder
+      pwd
+      git pull
+      remove-ignored-files-from-git >/dev/null 2>&1
+    fi
   fi
 done
