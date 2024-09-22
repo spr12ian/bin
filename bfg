@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# BFG Repo-Cleaner https://rtyley.github.io/bfg-repo-cleaner/
+
+if [ $# -gt 1 ]; then
+    echo Too many parameters!
+    exit
+fi
+
+workFolder=~/bfg-work-folder
+echo BFG Work folder: $workFolder
+
+if [ $# -eq 1 ]; then
+    command=$1
+    case $1 in
+    setup)
+        echo setup
+        if [ ! -d $workFolder ]; then
+            mkdir $workFolder
+        fi
+        ;;
+    cleardown)
+        echo cleardown
+        rmdir $workFolder
+        ;;
+    *)
+        echo 'Invalid command: ' $1
+        ;;
+    esac
+    exit
+fi
+
+if [ ! -d $workFolder ]; then
+    echo $workFolder does NOT exist
+    exit
+fi
+
+cd $workFolder
+pwd
