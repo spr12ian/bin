@@ -51,3 +51,19 @@ git update-index --chmod=-x README.md
 ## To Do
 
 Why are brackets a problem for echo in the about script?
+Gemini answer: Brackets can be problematic for echo due to their special meaning in shell scripting.
+
+Here's a breakdown of why:
+
+Filename Expansion:
+
+Brackets are often used for filename expansion. For example, echo [a-z] would list all files in the current directory that start with a lowercase letter.   
+If you want to print the literal [a-z], you need to escape the brackets or enclose them in quotes.
+Command Substitution:
+
+Brackets can also be used for command substitution, which allows you to execute a command within another command and use its output.
+If you want to print the literal brackets, you need to escape them or enclose them in quotes.   
+To avoid these issues, you can:
+
+Escape the brackets: Use a backslash (\) before each bracket to treat it as a literal character. For example: echo \[a-z\]
+Enclose the brackets in quotes: Using single or double quotes will prevent the shell from interpreting the brackets as special characters. For example: echo '[a-z]' or echo "[a-z]"
