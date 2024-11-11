@@ -48,7 +48,8 @@ for gitFolder in "${gitFolders[@]}"; do
 
     # Clean up ignored files if applicable
     if type remove-ignored-files-from-git >/dev/null 2>&1; then
-      remove-ignored-files-from-git >/dev/null 2>&1
+      #remove-ignored-files-from-git >/dev/null 2>&1
+      remove-ignored-files-from-git
     else
       echo "remove-ignored-files-from-git command not found, skipping..."
     fi
@@ -57,4 +58,6 @@ for gitFolder in "${gitFolders[@]}"; do
   else
     echo "ERROR: $gitFolder still does not exist after cloning"
   fi
+  
+  echo "Processing $gitFolder complete."
 done
