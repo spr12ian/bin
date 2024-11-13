@@ -3,8 +3,11 @@
 Shell scripts I keep in my bin folder, some more useful than others.
 
 On a new Linux user login:
-
 ```
+export GITHUB_INIT_DEFAULT_BRANCH="main"
+export GITHUB_USER_EMAIL="Your GitHub unique email address"
+export GITHUB_USER_NAME="Your name"
+
 mkdir ~/bin
 cd ~/bin
 update-linux
