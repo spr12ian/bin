@@ -9,9 +9,9 @@ else
     
     git version
 
-    git config --global init.defaultBranch main
-    git config --global user.email "173560+spr12ian@users.noreply.github.com"
-    git config --global user.name "spr12ian"
+    git config --global init.defaultBranch ${GITHUB_INIT_DEFAULT_BRANCH}
+    git config --global user.email ${GITHUB_USER_EMAIL}
+    git config --global user.name ${GITHUB_USER_NAME}
 
     git config --list
 fi
