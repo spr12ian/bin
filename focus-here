@@ -40,7 +40,7 @@ for gitFolder in "${gitFolders[@]}"; do
     echo "Pulling latest changes for $(basename "$gitFolder")..."
     
     # Pull the latest changes
-    if git pull; then
+    if git pull origin main; then
       echo "Successfully pulled latest changes"
     else
       echo "ERROR: Failed to pull latest changes for $(basename "$gitFolder")"
