@@ -9,7 +9,8 @@ else
     
     git version
 
-    git config --global init.defaultBranch ${GITHUB_INIT_DEFAULT_BRANCH}
+    git config --global init.defaultBranch main
+    git config --global pull.rebase false
     git config --global user.email ${GITHUB_USER_EMAIL}
     git config --global user.name ${GITHUB_USER_NAME}
 
