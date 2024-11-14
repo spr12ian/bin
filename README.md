@@ -1,5 +1,7 @@
 # bin
 
+# delete this line
+
 Shell scripts I keep in my bin folder, some more useful than others.
 
 On a new Linux user login:
