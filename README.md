@@ -6,7 +6,7 @@ On a new Linux user login:
 ```
 export GITHUB_INIT_DEFAULT_BRANCH="main"
 export GITHUB_USER_EMAIL="Your GitHub unique email address"
-export GITHUB_USER_NAME="Your name"
+export GITHUB_USER_NAME="Your GitHub user name"
 
 mkdir ~/bin
 cd ~/bin
