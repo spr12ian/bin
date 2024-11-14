@@ -1,8 +1,10 @@
 #!/bin/bash
 
+githubRepositoriesFolder=~/github-repositories
+
 # List of folders to check or clone
 gitFolders=(
-  ~/bin
+  ~/projects/bin
   ~/projects/menu-planner
   ~/projects/our-finances
   ~/projects/spr12ian.github.io
