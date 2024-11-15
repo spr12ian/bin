@@ -1,6 +1,10 @@
 #!/bin/bash
 
-ln -s "${HOME}/github-repositories/bin" "${HOME}/bin"
+export GITHUB_USER_NAME="spr12ian"
+export GITHUB_PARENT="${HOME}/github-repositories"
+export GITHUB_USER_EMAIL="173560+spr12ian@users.noreply.github.com"
+
+ln -s "${GITHUB_PARENT}/bin" "${HOME}/bin"
 
 if [ -d ~/bin ]; then
  echo folder ~/bin already exists
