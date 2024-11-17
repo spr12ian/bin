@@ -41,7 +41,7 @@ for repo in "${repos[@]}"; do
     if [ ! -d "${repo}" ]; then
         echo "${GITHUB_PARENT}/${repo} folder does NOT exist, cloning ${repo}..."
         # Try to clone the repository
-        if git clone "https://github.com/spr12ian/${repo}.git" "${repo}"; then
+        if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
             echo "Successfully cloned ${repo}"
         else
             echo "ERROR: Cloning ${repo} failed"
