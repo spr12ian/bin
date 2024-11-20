@@ -2,18 +2,37 @@
 
 Shell scripts I keep in my bin folder, some more useful than others.
 
-On a new Linux user login:
+## First steps in a new Linux bash environment
+
+Manually run these commands:
+
 ```
+# Setup the GitHub environment variables
 export GITHUB_INIT_DEFAULT_BRANCH="main"
 export GITHUB_USER_EMAIL="Your GitHub unique email address"
 export GITHUB_USER_NAME="Your GitHub user name"
 
-mkdir ~/bin
-cd ~/bin
-update-linux
+# Install the GitHub CLI (gh)
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+
+# Authorise gh
+gh auth login
+# Where do you use Github? Accept default of GitHub.com
+# What is your preferred protocol for Git operations on this host? Use SSH
+# Upload your SSH public key to your GitHub account? Accept default of ~/.ssh/id_ed25519.pub
+# Title for your SSH key: Accept default of (GitHub CLI)
+# How would you like to authenticate GitHub CLI?
+
+gh repo clone "${GITHUB_USER_NAME}"/bin
+
+focus-here
 ```
 
-Then run update-linux again, every now and then, to keep your system up to date.
+
 
 snap is preinstalled on Ubuntu systems, but not yet on ChromeOS Debian so the next step on ChromeOS is
 
@@ -29,11 +48,6 @@ install-snap-packages
 Every now and then refresh your snap packages
 ```
 sudo snap refresh
-```
-
-To do Google App Script (GAS) development locally I use clasp
-```
-install-clasp
 ```
 
 ## How this repo was created
@@ -53,20 +67,3 @@ git update-index --chmod=-x README.md
 
 ## To Do
 
-Why are brackets a problem for echo in the about script?
-Gemini answer: Brackets can be problematic for echo due to their special meaning in shell scripting.
-
-Here's a breakdown of why:
-
-Filename Expansion:
-
-Brackets are often used for filename expansion. For example, echo [a-z] would list all files in the current directory that start with a lowercase letter.   
-If you want to print the literal [a-z], you need to escape the brackets or enclose them in quotes.
-Command Substitution:
-
-Brackets can also be used for command substitution, which allows you to execute a command within another command and use its output.
-If you want to print the literal brackets, you need to escape them or enclose them in quotes.   
-To avoid these issues, you can:
-
-Escape the brackets: Use a backslash (\) before each bracket to treat it as a literal character. For example: echo \[a-z\]
-Enclose the brackets in quotes: Using single or double quotes will prevent the shell from interpreting the brackets as special characters. For example: echo '[a-z]' or echo "[a-z]"

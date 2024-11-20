@@ -13,8 +13,8 @@ howManyRepos=${#repos[@]}
 if [ "${howManyRepos}" -gt 0 ]; then
   echo "Number of repos: ${howManyRepos}"
 
-  mkdir -p ${GITHUB_PARENT}
-  cd ${GITHUB_PARENT}
+  mkdir -p "${GITHUB_PARENT}"
+  cd ${GITHUB_PARENT} || exit
 
   # Loop through array
   for repo in "${repos[@]}"; do
@@ -29,7 +29,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
       fi
     else
       echo "${GITHUB_PARENT}/${repo} folder already exists, pulling ${repo}..."
-      pushd ${repo} >/dev/null || {
+      pushd "${repo}" >/dev/null || {
         echo "ERROR: Could not enter ${repo}"
         continue
       }
