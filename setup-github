@@ -23,29 +23,3 @@ git config --global user.email ${GITHUB_USER_EMAIL}
 git config --global user.name ${GITHUB_USER_NAME}
 
 git config --list
-
-mkdir -p ${GITHUB_PARENT}
-cd ${GITHUB_PARENT}
-
-# List public repositories for a specific user
-# Filter for specific fields using jq
-# Assign results to array repos
-readarray -t repos < <(curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" | jq -r '.[].name')
-
-# Get array length
-echo "Number of repos: ${#repos[@]}"
-
-# Loop through array
-for repo in "${repos[@]}"; do
-    echo "Repository: ${repo}"
-    if [ ! -d "${repo}" ]; then
-        echo "${GITHUB_PARENT}/${repo} folder does NOT exist, cloning ${repo}..."
-        # Try to clone the repository
-        if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
-            echo "Successfully cloned ${repo}"
-        else
-            echo "ERROR: Cloning ${repo} failed"
-            continue
-        fi
-    fi
-done
