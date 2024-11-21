@@ -1,10 +1,10 @@
 #!/bin/bash
 
-update-linux
+update-linux.sh
 
-focus-here
+focus-here.sh
 
-cd ~/projects/spr12ian.github.io
+cd ~/${GITHUB_PARENT}/spr12ian.github.io
 
 new_blog="hugo new blog/`date -I`.md"
 

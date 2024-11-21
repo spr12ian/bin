@@ -1,6 +1,6 @@
 #!/bin/bash
 
-setup-github
+setup-github.sh
 
 # List public repositories for a specific user
 # Filter for specific fields using jq
@@ -41,9 +41,9 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: Pulling ${repo} failed"
       fi
       # Clean up ignored files if applicable
-      if type remove-ignored-files-from-git >/dev/null 2>&1; then
-        #remove-ignored-files-from-git >/dev/null 2>&1
-        remove-ignored-files-from-git
+      if type remove-ignored-files-from-git.sh >/dev/null 2>&1; then
+        #remove-ignored-files-from-git.sh >/dev/null 2>&1
+        remove-ignored-files-from-git.sh
       else
         echo "remove-ignored-files-from-git command not found, skipping..."
       fi

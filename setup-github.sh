@@ -1,6 +1,6 @@
 #!/bin/bash
 
-setup-git
+setup-git.sh
 
 env | grep GITHUB
 
