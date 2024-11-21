@@ -37,20 +37,20 @@ function fix_agent_connection() {
     eval "$(ssh-agent -s)"
     
     # Set permissions for SSH directory
-    if [ -d "$HOME/.ssh" ]; then
-        chmod 700 "$HOME/.ssh"
-        if [ -f "$HOME/.ssh/id_rsa" ]; then
-            chmod 600 "$HOME/.ssh/id_rsa"
+    if [ -d "~/.ssh" ]; then
+        chmod 700 "~/.ssh"
+        if [ -f "~/.ssh/id_rsa" ]; then
+            chmod 600 "~/.ssh/id_rsa"
         fi
-        if [ -f "$HOME/.ssh/id_ed25519" ]; then
-            chmod 600 "$HOME/.ssh/id_ed25519"
+        if [ -f "~/.ssh/id_ed25519" ]; then
+            chmod 600 "~/.ssh/id_ed25519"
         fi
     fi
     
     # Add default keys
     for key in id_rsa id_ed25519 id_ecdsa; do
-        if [ -f "$HOME/.ssh/$key" ]; then
-            ssh-add "$HOME/.ssh/$key" 2>/dev/null
+        if [ -f "~/.ssh/$key" ]; then
+            ssh-add "~/.ssh/$key" 2>/dev/null
             if [ $? -eq 0 ]; then
                 echo "Added key: $key"
             fi
@@ -60,9 +60,9 @@ function fix_agent_connection() {
 
 function save_agent_info() {
     # Save agent environment variables for other shells
-    echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" > "$HOME/.ssh/agent_env"
-    echo "export SSH_AGENT_PID=$SSH_AGENT_PID" >> "$HOME/.ssh/agent_env"
-    chmod 600 "$HOME/.ssh/agent_env"
+    echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" > "~/.ssh/agent_env"
+    echo "export SSH_AGENT_PID=$SSH_AGENT_PID" >> "~/.ssh/agent_env"
+    chmod 600 "~/.ssh/agent_env"
 }
 
 # Main execution

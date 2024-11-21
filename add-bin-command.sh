@@ -14,7 +14,7 @@ if [ $# -eq 1 ]; then
     command=$1
 fi
 
-cd ~/bin
+cd ${GITHUB_PARENT}/bin || exit
 
 if [ -f $command ]; then
     touch $command

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-update-linux.sh
-
 focus-here.sh
 
 cd ~/${GITHUB_PARENT}/spr12ian.github.io
