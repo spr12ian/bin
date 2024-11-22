@@ -51,6 +51,15 @@ if [ "${howManyRepos}" -gt 0 ]; then
         exit 1
       fi
 
+      # Check for staged changes
+      staged_changes=$(git diff --cached --name-only)
+
+      if [[ -n $staged_changes ]]; then
+        echo "The following files are in the staging area:"
+        echo "$staged_changes"
+        exit 1
+      fi
+
       # Try to fetch the repository
       if git fetch origin; then
         echo "Success: 'git fetch origin'"
