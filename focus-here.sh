@@ -35,7 +35,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
     else
       echo "Syncing ${GITHUB_PARENT}/${repo} ..."
       pushd "${repo}" >/dev/null || {
-        echo "ERROR: Could not enter ${repo}"
+        echo "ERROR: pushd ${repo} failed"
         continue
       }
       echo "Current directory: $(pwd)"
@@ -65,9 +65,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
       fi
 
       # Try to fetch the repository
-      if git fetch origin; then
-        echo "Success: 'git fetch origin'"
-      else
+      if ! git fetch origin; then
         echo "ERROR: 'git fetch origin' failed"
         exit 1
       fi
