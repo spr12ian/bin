@@ -22,7 +22,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
 
   # Loop through array
   for repo in "${repos[@]}"; do
-    echo "Repository: ${repo}"
+    # echo "Repository: ${repo}"
 
     if [ ! -d "${repo}" ]; then
       echo "${GITHUB_PARENT}/${repo} does NOT exist, cloning ${repo}..."
@@ -38,7 +38,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: pushd ${repo} failed"
         continue
       }
-      echo "Current directory: $(pwd)"
+      # echo "Current directory: $(pwd)"
 
       # Check if this is a Git repository
       if [[ ! -d .git ]]; then
@@ -99,13 +99,13 @@ if [ "${howManyRepos}" -gt 0 ]; then
         #remove-ignored-files-from-git.sh >/dev/null 2>&1
         remove-ignored-files-from-git.sh
       else
-        echo "remove-ignored-files-from-git command not found, skipping..."
+        echo "remove-ignored-files-from-git.sh command not found, skipping..."
       fi
       popd >/dev/null || {
         echo "ERROR: Could not return to previous directory"
         exit 1
       }
-      echo "Current directory: $(pwd)"
+      # echo "Current directory: $(pwd)"
     fi
 
     echo "Processing ${repo} complete."
