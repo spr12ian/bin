@@ -3,7 +3,7 @@
 # SSH Agent Management Script
 # This script handles SSH agent initialization and key management
 
-SSH_ENV="$HOME/.ssh/agent-environment"
+SSH_ENV="~/.ssh/agent-environment"
 
 function start_agent {
     echo "Starting new SSH agent..."
@@ -13,11 +13,11 @@ function start_agent {
     . "${SSH_ENV}" > /dev/null
     
     # Add default keys (modify this list as needed)
-    if [ -f "$HOME/.ssh/id_rsa" ]; then
-        ssh-add "$HOME/.ssh/id_rsa"
+    if [ -f "~/.ssh/id_rsa" ]; then
+        ssh-add "~/.ssh/id_rsa"
     fi
-    if [ -f "$HOME/.ssh/id_ed25519" ]; then
-        ssh-add "$HOME/.ssh/id_ed25519"
+    if [ -f "~/.ssh/id_ed25519" ]; then
+        ssh-add "~/.ssh/id_ed25519"
     fi
 }
 
