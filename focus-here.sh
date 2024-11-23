@@ -41,7 +41,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
       # echo "Current directory: $(pwd)"
 
       # Check if this is a Git repository
-      if [[ ! -d .git ]]; then
+      if [ ! -d .git ]; then
         echo "ERROR: Not a Git repository."
         exit 1
       fi
