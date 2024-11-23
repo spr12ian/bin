@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo npm install @google/clasp -g

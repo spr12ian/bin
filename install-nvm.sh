@@ -22,5 +22,9 @@ else
     # Verify the installation
     if [ -d ~/.nvm ]; then
         echo "nvm is now installed"
+
+        echo "From the interactive command line:"
+        echo "nvm install --lts"
+        echo "nvm use --lts""
     fi
 fi
