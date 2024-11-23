@@ -108,7 +108,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
       # echo "Current directory: $(pwd)"
     fi
 
-    echo "Processing ${repo} complete."
+    # echo "Processing ${repo} complete."
   done
 else
   echo "No GitHub repos found for ${GITHUB_USER_NAME}"
