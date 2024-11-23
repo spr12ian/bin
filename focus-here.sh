@@ -14,7 +14,11 @@ if [ "${howManyRepos}" -gt 0 ]; then
   echo "Number of repos: ${howManyRepos}"
 
   mkdir -p "${GITHUB_PARENT}"
-  cd ${GITHUB_PARENT} || { echo "ERROR: ${GITHUB_PARENT} not found"; exit 1; }
+  cd "${GITHUB_PARENT}" || {
+    echo "ERROR: ${GITHUB_PARENT} not found"
+    exit 1
+  }
+  echo "Current directory: $(pwd)"
 
   # Loop through array
   for repo in "${repos[@]}"; do
@@ -103,6 +107,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: Could not return to previous directory"
         exit 1
       }
+      echo "Current directory: $(pwd)"
     fi
 
     echo "Processing ${repo} complete."
