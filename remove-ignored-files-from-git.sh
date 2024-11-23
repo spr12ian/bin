@@ -7,7 +7,7 @@ if [ -f .gitignore ]; then
     exit 1
   fi
 
-  echo ".gitignore file exists"
+  # echo ".gitignore file exists"
 
   # Check for staged changes
   staged_changes=$(git diff --cached --name-only)
@@ -20,7 +20,5 @@ if [ -f .gitignore ]; then
     git add .
     git commit -m 'Removed all files that are in the .gitignore' 
     git push origin main
-  else
-    echo "No files are in the staging area."
   fi
 fi
