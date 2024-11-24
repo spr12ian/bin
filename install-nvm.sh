@@ -25,6 +25,6 @@ else
 
         echo "From the interactive command line:"
         echo "nvm install --lts"
-        echo "nvm use --lts""
+        echo "nvm use --lts"
     fi
 fi
