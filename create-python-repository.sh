@@ -20,14 +20,19 @@ cd "${repoDirectory}" || {
 }
 
 python3 -m venv venv
+
 source venv/bin/activate
+
 pip install flask
 pip install django
+
 pip freeze >requirements.txt
 
 git add .
 git commit -m "Installed venv with flask and django"
 git push origin
+
+echo "pytest is installed by default on GitHub"
 
 echo "Remember to configure Python in VS Code"
 echo " - Open the project folder in VS Code (code ${repoDirectory})."
