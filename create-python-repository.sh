@@ -25,6 +25,7 @@ source venv/bin/activate
 
 pip install flask
 pip install django
+pip install gspread oauth2client
 
 pip freeze >requirements.txt
 
