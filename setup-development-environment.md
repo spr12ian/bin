@@ -1,7 +1,7 @@
 ``` bash
 #!/bin/bash
 
-export GITHUB_PARENT=$(echo ~/projects)
+
 export GITHUB_USER_EMAIL="173560+spr12ian@users.noreply.github.com"
 export GITHUB_USER_NAME="spr12ian"
 

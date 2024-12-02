@@ -6,4 +6,5 @@ sudo snap install --classic go
 sudo snap install hugo
 sudo snap install node --classic
 sudo snap install sqlitebrowser
+
 sudo snap refresh
