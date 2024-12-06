@@ -2,7 +2,7 @@
 
 setup-git.sh
 
-env | grep GITHUB
+# env | grep GITHUB
 
 if [ -z "${GITHUB_HOST_NAME}" ]; then
     echo "Environment variable GITHUB_HOST_NAME is NOT set"
