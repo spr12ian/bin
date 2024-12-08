@@ -8,16 +8,12 @@ if [ $# -eq 0 ]; then
 fi
 
 file=$1
-echo "${file}"
 #Strip any file extension
 python_module="${file%.*}"
-echo "${python_module}"
 
 log_file="${python_module}".log
-echo "${log_file}"
 
 error_log_file="${python_module}"_error.log
-echo "${error_log_file}"
 
 python3 -m "${python_module}" >"${log_file}" 2>"${error_log_file}"
 
