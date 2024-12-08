@@ -1,9 +1,9 @@
 #!/bin/bash
 
-install-gh.sh
-install-jq.sh
-install-nvm.sh
-install-python.sh
-install-openssh-server.sh
-install-snap.sh
-install-vs-code.sh
+install-gh
+install-jq
+install-nvm
+install-python
+install-openssh-server
+install-snap
+install-vs-code

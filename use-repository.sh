@@ -5,7 +5,7 @@ if [ $# -gt 1 ]; then
     exit
 fi
 
-if [ $# -eq 0 ]; then     # if no arguments provided, prompt user
+if [ $# -eq 0 ]; then # if no arguments provided, prompt user
     echo "What repository should I use?"
     read -r repo
 fi
@@ -14,13 +14,13 @@ if [ $# -eq 1 ]; then
     repo=$1
 fi
 
-repoDir="${GITHUB_PARENT}/${repo}" 
+repoDir="${GITHUB_PARENT}/${repo}"
 
 cd "${repoDir}" || {
     echo "ERROR: cd ${repoDir} failed"
     exit
 }
 
-./setup-development-environment.sh
+./setup-development-environment
 
 code .

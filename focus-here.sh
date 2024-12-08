@@ -1,6 +1,6 @@
 #!/bin/bash
 
-setup-github.sh
+setup-github
 
 # List public repositories for a specific user
 # Filter for specific fields using jq
@@ -95,11 +95,11 @@ if [ "${howManyRepos}" -gt 0 ]; then
       fi
 
       # Clean up ignored files if applicable
-      if type remove-ignored-files-from-git.sh >/dev/null 2>&1; then
-        #remove-ignored-files-from-git.sh >/dev/null 2>&1
-        remove-ignored-files-from-git.sh
+      if type remove-ignored-files-from-git >/dev/null 2>&1; then
+        #remove-ignored-files-from-git >/dev/null 2>&1
+        remove-ignored-files-from-git
       else
-        echo "remove-ignored-files-from-git.sh command not found, skipping..."
+        echo "remove-ignored-files-from-git command not found, skipping..."
       fi
       popd >/dev/null || {
         echo "ERROR: Could not return to previous directory"
