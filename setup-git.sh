@@ -6,7 +6,7 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
     
-git version
+# git version
 
 git config --global core.autocrlf input
 git config --global core.fileMode false

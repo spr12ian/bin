@@ -27,7 +27,7 @@ fi
 git config --global user.email "${GITHUB_USER_EMAIL}"
 git config --global user.name "${GITHUB_USER_NAME}"
 
-git config --list
+# git config --list
 
 if grep -q "GitHub-${GITHUB_HOST_NAME}" ~/.ssh/id_ed25519.pub 2>/dev/null; then
     echo "GitHub-${GITHUB_HOST_NAME} ssh key exists"
@@ -43,4 +43,4 @@ else
     ssh-keygen -lf ~/.ssh/id_ed25519.pub
 fi
 
-ssh -T git@github.com
+# ssh -T git@github.com
