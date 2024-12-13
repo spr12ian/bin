@@ -1,8 +1,15 @@
 #!/bin/bash
 
+# Check if DEBUG is set to true
+if [ "$DEBUG" = "true" ]; then
+    set -x # Enable debugging
+else
+    set +x # Disable debugging
+fi
+
 setup-git
 
-# env | grep GITHUB
+debug env | grep GITHUB
 
 if [ -z "${GITHUB_HOST_NAME}" ]; then
     echo "Environment variable GITHUB_HOST_NAME is NOT set"
@@ -27,12 +34,12 @@ fi
 git config --global user.email "${GITHUB_USER_EMAIL}"
 git config --global user.name "${GITHUB_USER_NAME}"
 
-# git config --list
+debug git config --list
 
 if grep -q "GitHub-${GITHUB_HOST_NAME}" ~/.ssh/id_ed25519.pub 2>/dev/null; then
-    echo "GitHub-${GITHUB_HOST_NAME} ssh key exists"
-    ssh-keygen -lf ~/.ssh/id_ed25519.pub
-    cat ~/.ssh/id_ed25519.pub
+    debug echo "GitHub-${GITHUB_HOST_NAME} ssh key exists"
+    debug ssh-keygen -lf ~/.ssh/id_ed25519.pub
+    debug cat ~/.ssh/id_ed25519.pub
 else
     echo "Generating an ed25519 SSH key for GitHub with no passphrase:"
     ssh-keygen -t ed25519 -C "GitHub-${GITHUB_HOST_NAME}" -f ~/.ssh/id_ed25519 -N ""
@@ -43,4 +50,4 @@ else
     ssh-keygen -lf ~/.ssh/id_ed25519.pub
 fi
 
-# ssh -T git@github.com
+debug ssh -T git@github.com

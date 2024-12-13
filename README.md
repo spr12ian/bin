@@ -67,3 +67,8 @@ git update-index --chmod=-x README.md
 
 ## To Do
 
+## trap
+# enable
+trap 'echo "Executing: $BASH_COMMAND"' DEBUG
+# disable
+trap - DEBUG

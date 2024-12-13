@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check if DEBUG is set to true
+if [ "$DEBUG" = "true" ]; then
+  set -x # Enable debugging
+else
+  set +x # Disable debugging
+fi
+
 setup-github
 
 # List public repositories for a specific user
@@ -96,7 +103,6 @@ if [ "${howManyRepos}" -gt 0 ]; then
 
       # Clean up ignored files if applicable
       if type remove-ignored-files-from-git >/dev/null 2>&1; then
-        #remove-ignored-files-from-git >/dev/null 2>&1
         remove-ignored-files-from-git
       else
         echo "remove-ignored-files-from-git command not found, skipping..."
@@ -105,10 +111,10 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: Could not return to previous directory"
         exit 1
       }
-      # echo "Current directory: $(pwd)"
+      debug echo "Current directory: $(pwd)"
     fi
 
-    # echo "Processing ${repo} complete."
+    debug echo "Processing ${repo} complete."
   done
 else
   echo "No GitHub repos found for ${GITHUB_USER_NAME}"

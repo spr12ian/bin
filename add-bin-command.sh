@@ -5,7 +5,7 @@ if [ $# -gt 1 ]; then
     exit
 fi
 
-if [ $# -eq 0 ]; then     # if no arguments provided, prompt user
+if [ $# -eq 0 ]; then # if no arguments provided, prompt user
     echo "What command should I add?"
     read -r command
 fi
@@ -19,9 +19,11 @@ cd "${GITHUB_PARENT}/bin" || exit
 if [ -f "$command" ]; then
     touch "$command"
 else
-    echo '#!/bin/bash' > "$command"
+    echo '#!/bin/bash' >"$command"
 fi
 
 chmod u+x "$command"
 
 git add --chmod=+x "$command"
+
+setup-symbolic-links
