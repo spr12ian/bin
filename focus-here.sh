@@ -86,9 +86,9 @@ if [ "${howManyRepos}" -gt 0 ]; then
 
       # Check synchronization status
       if [[ "$local_commit" == "$remote_commit" ]]; then
-        echo "The local branch is up to date with the remote."
+        debug echo "The local branch is up to date with the remote."
       elif [[ "$local_commit" == "$base_commit" ]]; then
-        echo "The local branch is behind the remote. You need to pull changes."
+        debug echo "The local branch is behind the remote. Trying to pull changes."
         # Try to pull the repository
         if git pull; then
           echo "Successfully pulled ${repo}"
