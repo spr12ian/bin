@@ -18,18 +18,18 @@ readarray -t repos < <(curl -s "https://api.github.com/users/${GITHUB_USER_NAME}
 howManyRepos=${#repos[@]}
 
 if [ "${howManyRepos}" -gt 0 ]; then
-  echo "Number of repos: ${howManyRepos}"
+  debug echo "Number of repos: ${howManyRepos}"
 
   mkdir -p "${GITHUB_PARENT}"
   cd "${GITHUB_PARENT}" || {
     echo "ERROR: ${GITHUB_PARENT} not found"
     exit 1
   }
-  echo "Current directory: $(pwd)"
+  debug echo "Parent directory for GitHub repos: $(pwd)"
 
   # Loop through array
   for repo in "${repos[@]}"; do
-    # echo "Repository: ${repo}"
+    debug echo "Repository: ${repo}"
 
     if [ ! -d "${repo}" ]; then
       echo "${GITHUB_PARENT}/${repo} does NOT exist, cloning ${repo}..."
@@ -45,7 +45,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: pushd ${repo} failed"
         continue
       }
-      # echo "Current directory: $(pwd)"
+      debug echo "Current directory: $(pwd)"
 
       # Check if this is a Git repository
       if [ ! -d .git ]; then
