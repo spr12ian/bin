@@ -23,14 +23,14 @@ python3 -m venv venv
 
 source venv/bin/activate
 
-pip install flask
-pip install django
-pip install gspread oauth2client
+pip install -U pip
+
+pip install pytest
 
 pip freeze >requirements.txt
 
 git add .
-git commit -m "Installed venv with flask and django"
+git commit -m "Installed venv with pytest"
 git push origin
 
 echo "pytest is installed by default on GitHub"
