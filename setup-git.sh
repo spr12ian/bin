@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "$0" started
+
 # Check if DEBUG is set to true
 if [ "$DEBUG" = "true" ]; then
     set -x # Enable debugging
@@ -20,3 +22,7 @@ git config --global core.fileMode false
 git config --global core.ignoreCase false
 git config --global init.defaultBranch main
 git config --global pull.rebase false
+
+echo "Git configurations set successfully."
+
+echo "$0" finished

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "$0" started
+
 # Check if DEBUG is set to true
 if [ "$DEBUG" = "true" ]; then
     set -x # Enable debugging
@@ -34,6 +36,8 @@ fi
 git config --global user.email "${GITHUB_USER_EMAIL}"
 git config --global user.name "${GITHUB_USER_NAME}"
 
+echo "GitHub configurations set successfully."
+
 debug git config --list
 
 if grep -q "GitHub-${GITHUB_HOST_NAME}" ~/.ssh/id_ed25519.pub 2>/dev/null; then
@@ -51,3 +55,5 @@ else
 fi
 
 debug ssh -T git@github.com
+
+echo "$0" finished
