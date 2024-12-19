@@ -18,7 +18,7 @@ log_file="uninstall-pip-${package}.log"
 error_log_file="uninstall-pip-${package}-error.log"
 
 echo "Uninstalling ${package}"
-python3 -m pip uninstall "${package}" >"${log_file}" 2>"${error_log_file}"
+python3 -m pip uninstall -y "${package}" >"${log_file}" 2>"${error_log_file}"
 
 # Check if the file exists and its size is zero
 if [ -f "$log_file" ] && [ ! -s "$log_file" ]; then
