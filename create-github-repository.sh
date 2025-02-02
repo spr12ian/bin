@@ -5,7 +5,8 @@ if [ $# -eq 2 ]; then
     repoType=$2
 else
     echo "repo name and type required"
-    echo "See https://github.com/github/gitignore"
+    echo "Use AppEngine for a quick setup"
+    echo "See full list at  https://github.com/github/gitignore"
     exit 1
 fi
 
