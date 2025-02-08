@@ -8,6 +8,9 @@ if [ $# -eq 0 ]; then
 fi
 
 file=$1
+shift # Remove the first argument (the Python file)
+
+
 #Strip any file extension
 python_module="${file%.*}"
 
@@ -15,7 +18,7 @@ log_file="${python_module}".log
 
 error_log_file="${python_module}"_error.log
 
-python3 -m "${python_module}" >"${log_file}" 2>"${error_log_file}"
+python3 -m "${python_module}" "$@" >"${log_file}" 2>"${error_log_file}"
 
 # Check if the file exists and its size is zero
 if [ -f "$log_file" ] && [ ! -s "$log_file" ]; then
