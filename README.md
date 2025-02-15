@@ -1,6 +1,7 @@
 # bin
 
 Shell scripts I keep in my bin folder, some more useful than others.
+.env is not stored on GitHub as it contains information that must remain secure
 
 ## First steps in a new Linux bash environment
 

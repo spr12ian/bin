@@ -2,8 +2,8 @@
 
 focus-here
 
-cd "${GITHUB_PARENT}"/spr12ian.github.io || {
-    echo "ERROR: ${GITHUB_PARENT}/spr12ian.github.io not found"
+cd "${GITHUB_PARENT}"/"${GITHUB_USER_NAME}".github.io || {
+    echo "ERROR: ${GITHUB_PARENT}/"${GITHUB_USER_NAME}".github.io not found"
     exit 1
 }
 
