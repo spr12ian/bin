@@ -6,7 +6,7 @@ if [ $# -gt 1 ]; then
 fi
 
 if [ $# -eq 0 ]; then # if no arguments provided, prompt user
-    echo "What package should I add?"
+    echo "What package should I uninstall?"
     read -r package
 fi
 
