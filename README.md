@@ -73,3 +73,5 @@ git update-index --chmod=-x README.md
 trap 'echo "Executing: $BASH_COMMAND"' DEBUG
 # disable
 trap - DEBUG
+
+sudo apt-get install shellcheck
