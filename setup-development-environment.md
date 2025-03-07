@@ -2,9 +2,6 @@
 #!/bin/bash
 
 
-export GITHUB_USER_EMAIL="173560+spr12ian@users.noreply.github.com"
-export GITHUB_USER_NAME="spr12ian"
-
 mkdir -p ~/.local
 ln -s "${GITHUB_PARENT}"/bin ~/.local/bin
 ```
