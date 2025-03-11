@@ -23,6 +23,6 @@ git config --global core.ignoreCase false
 git config --global init.defaultBranch main
 git config --global pull.rebase false
 
-echo "Git configurations set successfully."
+debug echo "Git configurations set successfully."
 
 echo "$0" finished

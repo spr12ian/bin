@@ -36,7 +36,7 @@ fi
 git config --global user.email "${GITHUB_USER_EMAIL}"
 git config --global user.name "${GITHUB_USER_NAME}"
 
-echo "GitHub configurations set successfully."
+debug echo "GitHub configurations set successfully."
 
 debug git config --list
 
