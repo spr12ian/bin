@@ -7,4 +7,5 @@ install-openssh-server
 install-poppler-utils
 install-python
 install-snap-packages
+install-tesseract-ocr
 install-vs-code
