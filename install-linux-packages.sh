@@ -1,5 +1,7 @@
 #!/bin/bash
 
+setup-symbolic-links
+
 install-gh
 install-jq
 install-nvm
