@@ -3,7 +3,7 @@
 sudo apt update
 sudo apt upgrade -y
 
-sudo install-linux-packages
+install-linux-packages
 
 sudo apt --purge autoremove -y
 
