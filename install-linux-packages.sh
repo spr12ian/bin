@@ -2,6 +2,7 @@
 
 setup-symbolic-links
 
+install-docker
 install-gh
 install-jq
 install-nvm
