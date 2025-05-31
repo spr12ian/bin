@@ -18,3 +18,5 @@ if ! command -v venv &> /dev/null; then
         exit 1
     fi
 fi
+
+python3 -m pip list --outdated
