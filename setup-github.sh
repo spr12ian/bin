@@ -13,11 +13,6 @@ setup-git
 
 debug env | grep GITHUB
 
-if [ -z "${GITHUB_HOST_NAME}" ]; then
-    echo "Environment variable GITHUB_HOST_NAME is NOT set"
-    exit 1
-fi
-
 if [ -z "${GITHUB_PARENT}" ]; then
     echo "Environment variable GITHUB_PARENT is NOT set"
     exit 1
@@ -39,6 +34,8 @@ git config --global user.name "${GITHUB_USER_NAME}"
 debug echo "GitHub configurations set successfully."
 
 debug git config --list
+
+GITHUB_HOST_NAME=$(hostnamectl --static)
 
 if grep -q "GitHub-${GITHUB_HOST_NAME}" ~/.ssh/id_ed25519.pub 2>/dev/null; then
     debug echo "GitHub-${GITHUB_HOST_NAME} ssh key exists"
