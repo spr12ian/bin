@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-#source source-bash.sh > a.log &2>b.log
+#DEBUG=1 source source-bash.sh >a.log &2>b.log
 LOCAL_BIN="${LOCAL_BIN:-$HOME/.local/bin}"
 
 debug() {

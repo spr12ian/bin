@@ -37,4 +37,4 @@ log_block_finish() {
     _debug_log "← Finished ${FUNCNAME[1]}"
 }
 
-
+log_sourced
