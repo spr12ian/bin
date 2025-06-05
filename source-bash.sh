@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 #DEBUG=1 source source-bash.sh >a.log &2>b.log
 LOCAL_BIN="${LOCAL_BIN:-$HOME/.local/bin}"
 
@@ -74,22 +75,26 @@ source_if_exists() {
 }
 
 stop_if_executed() {
-  if this_script_is_executed; then
+  if is_this_script_executed; then
     log_error "${BASH_SOURCE[0]} must not be executed"
     exit 1
   fi
 }
 
 stop_if_sourced() {
-  if ! this_script_is_executed; then
+  if ! is_this_script_executed; then
     log_error "${BASH_SOURCE[0]} must not be sourced."
     exit 1
   fi
 }
 
-this_script_is_executed() {
+is_this_script_executed() {
+  declare -p BASH_SOURCE
+  log_info "\${0}=${0}"
   # ${0} is 'bash' if sourced or the called top level function otherwise
   [[ "${BASH_SOURCE[0]}" == "${0}" ]]
 }
+
+stop_if_executed
 
 log_sourced

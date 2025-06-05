@@ -37,4 +37,6 @@ log_block_finish() {
     _debug_log "← Finished ${FUNCNAME[1]}"
 }
 
+stop_if_executed
+
 log_sourced
