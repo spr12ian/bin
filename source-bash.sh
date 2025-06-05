@@ -1,19 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
+#source source-bash.sh > a.log &2>b.log
 LOCAL_BIN="${LOCAL_BIN:-$HOME/.local/bin}"
+
+debug() {
+  if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then
+    "$@"
+  else
+    "$@" &>/dev/null
+  fi
+}
+
+log_error() { echo "❌ $*" >&2; }
+
+log_info() { echo "ℹ️  $*"; }
+
+#depends on log_info
+log_debug() {
+  debug log_info "[DEBUG] $*"
+}
+
+log_warn() { echo "⚠️  $*" >&2; }
+
+#depends on debug and log_info
+log_sourced() {
+  debug log_info "Sourced: ${BASH_SOURCE[1]} (by ${BASH_SOURCE[2]:-shell})"
+}
 
 # Prevent re-sourcing
 guard_source() {
   local guard_var="$1"
-  if [[ "${!guard_var:-}" == "1" ]]; then return 0; fi
+  if [[ "${!guard_var:-}" == "1" ]]; then
+    log_debug "Guard '$guard_var' already set, skipping re-source."
+    return 0
+  fi
   printf -v "$guard_var" "1"
+  log_debug "Guard '$guard_var' set, sourcing for the first time."
 }
-guard_source __SOURCE_BASH_LOADED
 
-log_error() { echo "❌ $*" >&2; }
-log_info() { echo "ℹ️  $*"; }
-log_warn() { echo "⚠️  $*" >&2; }
+guard_source __SOURCE_BASH_LOADED
 
 # Run a command from $LOCAL_BIN if it exists and is the first in PATH
 run_local() {
@@ -67,4 +92,4 @@ this_script_is_executed() {
   [[ "${BASH_SOURCE[0]}" == "${0}" ]]
 }
 
-[[ "${DEBUG_SOURCED:-}" == "1" ]] && log_info "Sourced: ${BASH_SOURCE[0]}"
+log_sourced

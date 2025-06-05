@@ -4,6 +4,8 @@ set -euo pipefail
 # shellcheck source=/dev/null
 source "$HOME/.local/bin/source-bash"
 
+guard_source __SOURCE_DEBUG_LOADED
+
 set_debug_log() {
     # Location of the debug log
     DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename "$0").log}"

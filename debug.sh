@@ -1,7 +1,10 @@
 #!/bin/bash
 
-if [ "$DEBUG" = "true" ]; then
+debug() {
+  if [[ "${DEBUG:-}" == "true" ]]; then
     "$@"
-else
+  else
     "$@" &>/dev/null
-fi
+  fi
+}
+
