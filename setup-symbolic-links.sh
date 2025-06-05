@@ -26,35 +26,44 @@ if [ ${#files[@]} -eq 0 ]; then
 fi
 
 for file in "${files[@]}"; do
-    echo "Processing: ${file}"
+    [[ -f "$file" ]] || {
+        echo "Source is not a regular file: $file"
+        continue
+    }
 
     # Check if file has a shebang line
-    grep -q '^#!' "$file" || echo "WARNING: $file is missing a shebang line"
-    [[ ! -f "${file}" ]] && echo "Source is not a regular file"
-    [[ ! -x "${file}" ]] && echo "Source is not executable"
-    
-    command_file=$(basename "${file}" .sh)
+    grep -q '^#!' "$file" || {
+        echo "WARNING: $file is missing a shebang line"
+        continue
+    }
+
+    command_file=$(basename -- "${file}" .sh)
+
+    if [[ "$command_file" == source-* ]]; then
+        mode=600
+    else
+        mode=700
+    fi
+
+    chmod "$mode" "$file"
+
     link_path="${target_dir}/${command_file}"
 
     ln -sf "${file}" "${link_path}"
-    echo "Created symlink: ${link_path} -> ${file}"
-
-    [[ ! -x "${link_path}" ]] && echo "Link is not executable"
-    [[ ! -f "${link_path}" ]] && echo "Link is not a regular file"
-
-    echo
 done
 
-ls -al "${target_dir}"
+for file in "${source_dir}"/*; do
+    # Skip if it's a directory
+    [[ -d "$file" ]] && continue
+
+    # Skip if filename ends with .sh
+    if [[ "$file" == *.sh ]]; then
+        continue
+    fi
+
+    ls -l "$file"
+done
+
+ls -lL "${target_dir}"
+
 echo "Symbolic links created in ${target_dir} for all .sh files in ${source_dir}"
-echo "Please add ${target_dir} to your PATH if not already done."
-echo "Done."
-echo "Please run the following command to add ${target_dir} to your PATH:"
-echo "export PATH=\"${target_dir}:\$PATH\""
-echo "You can add this line to your ~/.bashrc or ~/.bash_profile to make it permanent."
-echo "You can also add the following line to your ~/.profile to make it permanent:"
-echo "export PATH=\"${target_dir}:\$PATH\""
-echo "You can also add the following line to your ~/.bash_profile to make it permanent:"
-echo "export PATH=\"${target_dir}:\$PATH\""
-echo "You can also add the following line to your ~/.bashrc to make it permanent:"
-echo "export PATH=\"${target_dir}:\$PATH\""
