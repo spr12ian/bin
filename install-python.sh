@@ -2,6 +2,8 @@
 
 sudo apt install -y python3 python3-pip
 
+
+
 # Determine the Python 3 version
 python_full_version=$(python3 --version 2>&1 | awk '{print $2}')
 python_version="$(echo $python_full_version | cut -d. -f1-2)"
