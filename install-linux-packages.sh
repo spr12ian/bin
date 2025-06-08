@@ -11,5 +11,6 @@ install-poppler-utils # PDF utilities
 install-python # Python programming language
 install-rust # Rust programming language
 install-snap-packages # Snap package manager
+install-sqlite3 # sql command line
 install-tesseract-ocr # Optical Character Recognition
 install-vs-code # Visual Studio Code for code editing
