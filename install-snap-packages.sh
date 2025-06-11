@@ -20,7 +20,7 @@ install_snap() {
 }
 
 # Install snaps with appropriate confinement
-install_snap code --classic  # Code with classic
+#install_snap code --classic  # Code with classic
 install_snap go --classic    # Go with classic
 install_snap hugo            # Hugo (default confinement)
 install_snap node --classic  # Node with classic
