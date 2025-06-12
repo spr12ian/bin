@@ -16,6 +16,8 @@ EXCLUDES=(
   "node_modules"
   ".npm"
   ".local/share/Trash"
+  ".pyenv"
+  ".cargo"
 )
 
 # === BUILD EXCLUDE OPTIONS ===
