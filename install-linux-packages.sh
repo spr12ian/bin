@@ -7,6 +7,7 @@ install-gh # GitHub CLI for managing GitHub repositories
 install-jq # Command-line JSON processor
 install-nvm # Node Version Manager
 install-openssh-server # SSH server for remote access
+install-pipx # install and run Python applications in isolated environments
 install-poppler-utils # PDF utilities
 install-python # Python programming language
 install-rust # Rust programming language
