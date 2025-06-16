@@ -18,7 +18,7 @@ for sshd_setting in "${sshd_config_settings[@]}"; do
     fi
 done
 
-sudo service ssh start
+sudo systemctl start ssh
 sudo systemctl enable ssh
 sudo ufw allow ssh
 
