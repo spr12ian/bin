@@ -12,8 +12,6 @@ fi
 
 setup-git
 
-debug env | grep GITHUB
-
 if [ -z "${GITHUB_PARENT}" ]; then
     echo "Environment variable GITHUB_PARENT is NOT set"
     exit 1
