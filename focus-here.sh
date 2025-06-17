@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Check if DEBUG is set to true
-if [ "$DEBUG" = "true" ]; then
+if [[ "${DEBUG:-}" == "true" ]]; then
   set -x # Enable debugging
 else
   set +x # Disable debugging
