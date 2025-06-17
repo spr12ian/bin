@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Generates Bash functions for each .sh script in a directory
 
 SRC_DIR="$HOME/projects/bin"                     # folder with .sh scripts

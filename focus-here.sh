@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Check if DEBUG is set to true
 if [ "$DEBUG" = "true" ]; then

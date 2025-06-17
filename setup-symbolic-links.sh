@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 source_dir="${GITHUB_PARENT}/bin"
 target_dir="$HOME/.local/bin"

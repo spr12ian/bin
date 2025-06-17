@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Check if openssh-server is installed
 if dpkg -l | grep -q openssh-server; then

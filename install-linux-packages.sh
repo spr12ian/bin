@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 setup-symbolic-links # Create symbolic links for these commands to work
 

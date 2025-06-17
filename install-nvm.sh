@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Check if nvm is installed
 if [ -d ~/.nvm ]; then

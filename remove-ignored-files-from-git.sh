@@ -1,6 +1,7 @@
 #!/bin/bash
+set -euo pipefail
 
-if [ -f .gitignore ]; then 
+if [ -f .gitignore ]; then
   # Check if this is a Git repository
   if [[ ! -d .git ]]; then
     echo "ERROR: Not a Git repository."
@@ -18,7 +19,7 @@ if [ -f .gitignore ]; then
 
     git rm -r --cached . >/dev/null
     git add .
-    git commit -m 'Removed all files that are in the .gitignore' 
+    git commit -m 'Removed all files that are in the .gitignore'
     git push origin main
   fi
 fi
