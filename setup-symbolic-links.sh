@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source_dir="${GITHUB_PARENT}/bin"
-target_dir="$HOME/.local/bin"
+original_dir="${GITHUB_PARENT}/bin"
+target_dir="$HOME/.symlinks/bin"
 mkdir -p "${target_dir}"
 
-# Check source directory
-if [ ! -d "${source_dir}" ]; then
-    echo "Source directory does not exist: ${source_dir}"
+# Check original directory
+if [ ! -d "${original_dir}" ]; then
+    echo "Original directory does not exist: ${original_dir}"
     exit 1
 fi
 
@@ -18,17 +18,17 @@ if [ ! -w "${target_dir}" ]; then
 fi
 
 shopt -s nullglob
-files=("${source_dir}"/*.sh)
+files=("${original_dir}"/*.sh)
 shopt -u nullglob
 
 if [ ${#files[@]} -eq 0 ]; then
-    echo "No .sh files found in ${source_dir}"
+    echo "No .sh files found in ${original_dir}"
     exit 0
 fi
 
 for file in "${files[@]}"; do
     [[ -f "$file" ]] || {
-        echo "Source is not a regular file: $file"
+        echo "Original is not a regular file: $file"
         continue
     }
 
@@ -53,7 +53,7 @@ for file in "${files[@]}"; do
     ln -sf "${file}" "${link_path}"
 done
 
-for file in "${source_dir}"/*; do
+for file in "${original_dir}"/*; do
     # Skip if it's a directory
     [[ -d "$file" ]] && continue
 
@@ -67,4 +67,4 @@ done
 
 ls -lL "${target_dir}"
 
-echo "Symbolic links created in ${target_dir} for all .sh files in ${source_dir}"
+echo "Symbolic links created in ${target_dir} for all .sh files in ${original_dir}"
