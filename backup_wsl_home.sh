@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # === AUTO-DETECT WINDOWS USERNAME ===
