@@ -1,17 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "$0" started
 
 # Check if DEBUG is set to true
-if [ "$DEBUG" = "true" ]; then
+if [[ "${DEBUG:-}" == "true" ]]; then
     set -x # Enable debugging
 else
     set +x # Disable debugging
 fi
 
 setup-git
-
-debug env | grep GITHUB
 
 if [ -z "${GITHUB_PARENT}" ]; then
     echo "Environment variable GITHUB_PARENT is NOT set"

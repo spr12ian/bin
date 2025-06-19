@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Check if DEBUG is set to true
-if [ "$DEBUG" = "true" ]; then
+if [[ "${DEBUG:-}" == "true" ]]; then
   set -x # Enable debugging
 else
   set +x # Disable debugging
@@ -54,7 +55,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
       fi
 
       # Check for unstaged changes
-      unstaged_changes=$(git status --porcelain | grep -E "^[ ?][MDARC]")
+      unstaged_changes=$(git diff --name-only)
 
       if [[ -n $unstaged_changes ]]; then
         echo "Unstaged changes detected:"

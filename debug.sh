@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 debug() {
   if [[ "${DEBUG:-}" == "true" ]]; then
@@ -7,4 +8,3 @@ debug() {
     "$@" &>/dev/null
   fi
 }
-

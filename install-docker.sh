@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 sudo apt install -y docker.io docker-compose
 sudo usermod -aG docker $USER

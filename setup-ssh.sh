@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Array of SSHD settings
 sshd_config_settings=("Port 22" "PermitRootLogin no" "PasswordAuthentication yes")

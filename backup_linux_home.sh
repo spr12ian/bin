@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 DEST_DIR="/mnt/chromeos/MyFiles/GoogleDrive/My Drive/Linux Backup"

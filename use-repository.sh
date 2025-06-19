@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 if [ $# -gt 1 ]; then
     echo "Too many parameters!"

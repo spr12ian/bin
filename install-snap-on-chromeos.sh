@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # snap should already be installed on Ubuntu
 # On ChromeOS
