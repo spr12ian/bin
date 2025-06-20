@@ -24,4 +24,4 @@ install_apt_package() {
     log_function_finish
 }
 
-install_apt_package $1
+install_apt_package "$1"
