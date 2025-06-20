@@ -2,6 +2,37 @@
 
 SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
 
+set_debug_log() {
+  # Location of the debug log
+  DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename "$0").log}"
+  echo "The debug log file can be found at $DEBUG_LOG"
+}
+
+# Log a message with optional timestamp and indentation
+_debug_log() {
+  local msg="$1"
+  local indent=""
+  for ((i = ${#FUNCNAME[@]} - 2; i > 0; i--)); do
+    indent+="  "
+  done
+  local timestamp
+  timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+
+  if declare -p DEBUG_LOG &>/dev/null; then
+    echo "${timestamp} ${indent}${msg}" >>"$DEBUG_LOG"
+  else
+    echo "${timestamp} ${indent}${msg}"
+  fi
+}
+
+log_function_start() {
+  _debug_log "→ Starting ${FUNCNAME[1]}"
+}
+
+log_function_finish() {
+  _debug_log "← Finished ${FUNCNAME[1]}"
+}
+
 # debug must be defined before log_debug
 debug() {
   if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then
