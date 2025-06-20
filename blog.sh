@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-focus-here
+focus_here
 
 cd "${GITHUB_PARENT}/${GITHUB_USER_NAME}.github.io" || {
     echo "ERROR: ${GITHUB_PARENT}/${GITHUB_USER_NAME}.github.io not found"

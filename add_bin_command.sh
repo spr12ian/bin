@@ -27,4 +27,4 @@ chmod u+x "$command"
 
 git add --chmod=+x "$command"
 
-setup-symbolic-links
+setup_symbolic_links

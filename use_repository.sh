@@ -22,6 +22,6 @@ cd "${repoDir}" || {
     exit
 }
 
-./setup-development-environment
+./setup_development_environment
 
 code .

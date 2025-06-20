@@ -8,7 +8,7 @@ else
   set +x # Disable debugging
 fi
 
-setup-github
+setup_github
 
 # List public repositories for a specific user
 # Filter for specific fields using jq

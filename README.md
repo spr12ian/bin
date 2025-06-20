@@ -29,7 +29,7 @@ gh auth login
 
 gh repo clone "${GITHUB_USER_NAME}"/bin
 
-focus-here
+focus_here
 ```
 
 
@@ -37,12 +37,12 @@ focus-here
 snap is preinstalled on Ubuntu systems, but not yet on ChromeOS Debian so the next step on ChromeOS is
 
 ```
-install-snap-on-chromeos
+install_snap_on_chromeos
 ```
 
 Now that snap is installed
 ```
-install-snap-packages
+install_snap_packages
 ```
 
 Every now and then refresh your snap packages
@@ -103,17 +103,17 @@ cd ~/bin
 update-linux
 ```
 
-Then run update-linux again, every now and then, to keep your system up to date.
+Then run update_linux again, every now and then, to keep your system up to date.
 
 snap is preinstalled on Ubuntu systems, but not yet on ChromeOS Debian so the next step on ChromeOS is
 
 ```
-install-snap-on-chromeos
+install_snap_on_chromeos
 ```
 
 Now that snap is installed
 ```
-install-snap-packages
+install_snap_packages
 ```
 
 Every now and then refresh your snap packages
@@ -123,7 +123,7 @@ sudo snap refresh
 
 To do Google App Script (GAS) development locally I use clasp
 ```
-install-clasp
+install_clasp
 ```
 
 ## How this repo was created

@@ -8,8 +8,8 @@ else
     exit 1
 fi
 
-if ! create-github-repository "${repo}" "Python"; then
-    echo "create-github-repository ${repo} Python failed"
+if ! create_github_repository "${repo}" "Python"; then
+    echo "create_github_repository ${repo} Python failed"
     exit 1
 fi
 

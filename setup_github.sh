@@ -10,7 +10,7 @@ else
     set +x # Disable debugging
 fi
 
-setup-git
+setup_git
 
 if [ -z "${GITHUB_PARENT}" ]; then
     echo "Environment variable GITHUB_PARENT is NOT set"

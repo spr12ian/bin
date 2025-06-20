@@ -2,7 +2,7 @@
 set -euo pipefail
 
 original_dir="${GITHUB_PARENT}/bin"
-target_dir="$HOME/.local/bin"
+target_dir="$HOME/.symlinks/bin"
 
 # Check original directory
 if [ ! -d "${original_dir}" ]; then

@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-setup-symbolic-links # Create symbolic links for these commands to work
+setup_symbolic_links # Create symbolic links for these commands to work
 
-install-docker # Learning about FastAPI, Docker is essential
-install-gh # GitHub CLI for managing GitHub repositories
-install-jq # Command-line JSON processor
-install-nvm # Node Version Manager
-install-openssh-server # SSH server for remote access
-install-pipx # install and run Python applications in isolated environments
-install-poppler-utils # PDF utilities
-install-python # Python programming language
-install-rust # Rust programming language
-install-snap-packages # Snap package manager
-install-sqlite3 # sql command line
-install-tesseract-ocr # Optical Character Recognition
-install-vs-code # Visual Studio Code for code editing
+install_docker         # Learning about FastAPI, Docker is essential
+install_gh             # GitHub CLI for managing GitHub repositories
+install_jq             # Command_line JSON processor
+install_nvm            # Node Version Manager
+install_openssh_server # SSH server for remote access
+install_pipx           # install and run Python applications in isolated environments
+install_poppler_utils  # PDF utilities
+install_python         # Python programming language
+install_rust           # Rust programming language
+install_snap_packages  # Snap package manager
+install_sqlite3        # sql command line
+install_tesseract_ocr  # Optical Character Recognition
+install_vs_code        # Visual Studio Code for code editing
