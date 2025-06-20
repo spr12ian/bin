@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo apt install -y docker.io docker-compose
+install_apt_package docker.io
+install_apt_package docker-compose
+
 sudo usermod -aG docker $USER
 
 docker --version

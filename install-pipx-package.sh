@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SYMLINKS_SOURCE_DIR="$HOME/.symlinks/source"
+
 # shellcheck disable=SC1091
 source "${SYMLINKS_SOURCE_DIR}/bash-functions"
 
@@ -11,4 +12,4 @@ if [[ $# -ne 1 ]]; then
   exit 1
 fi
 
-install_apt_package "$1"
+install_pipx_package "$1"

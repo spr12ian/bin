@@ -7,7 +7,7 @@ if dpkg -l | grep -q openssh-server; then
     exit
 fi
 
-sudo apt install -y openssh-server
+install_apt_package openssh-server
 
 # Check the server is running
 sudo systemctl status ssh

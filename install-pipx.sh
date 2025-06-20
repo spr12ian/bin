@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo apt install -y pipx
+install_apt_package pipx
 
 pipx --version

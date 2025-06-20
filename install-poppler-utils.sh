@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo apt install -y poppler-utils
+install_apt_package poppler-utils

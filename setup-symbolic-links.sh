@@ -53,5 +53,8 @@ link_scripts_in_dir() {
     echo "Symbolic links created in ${target_dir} for all .sh files in ${original_dir}"
 }
 
-link_scripts_in_dir "${GITHUB_PARENT}/bin" "$HOME/.symlinks/bin" 700
-link_scripts_in_dir "${GITHUB_PARENT}/bin/source" "$HOME/.symlinks/source" 600
+PROJECT_DIR="${GITHUB_PARENT}/bin"
+SYMLINKS_DIR="$HOME/.symlinks"
+
+link_scripts_in_dir "${PROJECT_DIR}" "$SYMLINKS_DIR/bin" 700
+link_scripts_in_dir "${PROJECT_DIR}/source" "$SYMLINKS_DIR/source" 600
