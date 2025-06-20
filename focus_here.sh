@@ -103,10 +103,10 @@ if [ "${howManyRepos}" -gt 0 ]; then
       fi
 
       # Clean up ignored files if applicable
-      if type remove-ignored-files-from-git >/dev/null 2>&1; then
-        remove-ignored-files-from-git
+      if type remove_ignored_files_from_git >/dev/null 2>&1; then
+        remove_ignored_files_from_git
       else
-        echo "remove-ignored-files-from-git command not found, skipping..."
+        echo "remove_ignored_files_from_git command not found, skipping..."
       fi
       popd >/dev/null || {
         echo "ERROR: Could not return to previous directory"
