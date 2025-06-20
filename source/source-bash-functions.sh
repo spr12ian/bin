@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-#DEBUG=1 source source-bash.sh >a.log &2>b.log
-LOCAL_BIN="${LOCAL_BIN:-$HOME/.local/bin}"
+SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
 
+# debug must be defined before log_debug
 debug() {
   if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then
     "$@"
@@ -13,9 +13,10 @@ debug() {
 
 log_error() { echo "❌ $*" >&2; }
 
+#log_info must be defined before log_debug
 log_info() { echo "ℹ️  $*"; }
 
-#depends on log_info
+#depends on debug and log_info
 log_debug() {
   debug log_info "[DEBUG] $*"
 }
@@ -38,18 +39,18 @@ guard_source() {
   log_debug "Guard '$guard_var' set, sourcing for the first time."
 }
 
-guard_source __SOURCE_BASH_LOADED
+guard_source __SOURCE_BASH_FUNCTIONS_LOADED
 
-# Run a command from $LOCAL_BIN if it exists and is the first in PATH
+# Run a command from $SYMLINKS_BIN_DIR if it exists and is the first in PATH
 run_local() {
   local cmd="$1"
   shift
 
-  local local_cmd="$LOCAL_BIN/$cmd"
+  local local_cmd="$SYMLINKS_BIN_DIR/$cmd"
 
-  # Check: file exists and is executable in LOCAL_BIN
+  # Check: file exists and is executable in SYMLINKS_BIN_DIR
   if [ ! -x "$local_cmd" ]; then
-    log_warn "Command '$cmd' not found or not executable in $LOCAL_BIN."
+    log_warn "Command '$cmd' not found or not executable in $SYMLINKS_BIN_DIR."
     return 1
   fi
 
@@ -57,7 +58,7 @@ run_local() {
   local resolved
   resolved="$(command -v "$cmd" 2>/dev/null)"
   if [ "$resolved" != "$local_cmd" ]; then
-    log_warn "Command '$cmd' is not resolved to $LOCAL_BIN first in PATH (resolved to $resolved)."
+    log_warn "Command '$cmd' is not resolved to $SYMLINKS_BIN_DIR first in PATH (resolved to $resolved)."
     return 1
   fi
 
@@ -76,14 +77,14 @@ source_if_exists() {
 stop_if_executed() {
   if is_this_script_executed; then
     log_error "${BASH_SOURCE[0]} must not be executed"
-    exit 1
+    return 1
   fi
 }
 
 stop_if_sourced() {
   if ! is_this_script_executed; then
     log_error "${BASH_SOURCE[0]} must not be sourced."
-    exit 1
+    return 1
   fi
 }
 
