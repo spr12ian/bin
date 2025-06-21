@@ -159,7 +159,7 @@ link_home_dotfiles() {
   fi
 
   for filename in "$@"; do
-    local src_file="$original_dir/$filename"
+    local src_file="$original_dir/.$filename"
     local dest_file="$target_dir/.$filename"
 
     if [ ! -f "$src_file" ]; then
