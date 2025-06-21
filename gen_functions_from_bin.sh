@@ -14,7 +14,7 @@ for script in "$SRC_DIR"/*.sh; do
     # Skip non-files (in case of glob failure)
     [ -f "$script" ] || continue
 
-    name=$(basename "$script" .sh)
+    name=$(basename -- "$script" .sh)
 
     # Skip invalid names (e.g. ones that would clash with builtins)
     if [[ ! "$name" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then

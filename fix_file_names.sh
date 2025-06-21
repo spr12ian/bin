@@ -4,7 +4,7 @@ set -euo pipefail
 # Recursively find and rename files with hyphens in the name
 find . -depth -type f -name '*-*' | while IFS= read -r file; do
   dir=$(dirname "$file")
-  base=$(basename "$file")
+  base=$(basename -- "$file")
   new_base="${base//-/_}"
   new_path="$dir/$new_base"
 

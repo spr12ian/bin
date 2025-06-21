@@ -9,7 +9,7 @@ set -euo pipefail
 
 echo "1: $CALL_STACK"
 
-__CURRENT_SCRIPT="$(basename "${BASH_SOURCE[1]}")"
+__CURRENT_SCRIPT="$(basename -- "${BASH_SOURCE[1]}")"
 echo "2: $__CURRENT_SCRIPT"
 
 # Always push current script

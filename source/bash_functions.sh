@@ -5,7 +5,7 @@ set -euo pipefail
 # Constants and Initial Setup
 # ────────────────────────────────────────────────────────────────────────────────
 SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
-DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename "$0").log}"
+DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename -- "$0").log}"
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Logging
