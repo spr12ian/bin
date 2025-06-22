@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# shellcheck shell=bash
+
+# ────────────────────────────────────────────────────────────────────────────────
+# SAFETY WRAPPER — Protect login shells
+# Do NOT use `set -euo pipefail` globally in a sourced file.
+# ────────────────────────────────────────────────────────────────────────────────
+
+__source_bash_functions_guard_var="__SOURCE_BASH_FUNCTIONS_LOADED"
+if [[ "${!__source_bash_functions_guard_var:-}" == "1" ]]; then
+  return 0
+fi
+printf -v "$__source_bash_functions_guard_var" "1"
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Constants and Initial Setup
@@ -90,8 +101,6 @@ stop_if_sourced() {
 # ────────────────────────────────────────────────────────────────────────────────
 
 about() {
-  clear
-
   local args=()
 
   if [ $# -eq 0 ]; then
