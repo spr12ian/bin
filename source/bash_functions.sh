@@ -17,8 +17,8 @@ printf -v "$__source_bash_functions_guard_var" "1"
 # ────────────────────────────────────────────────────────────────────────────────
 
 log_error() { echo "❌ $*" >&2; }
-log_warn()  { echo "⚠️  $*" >&2; }
-log_info()  { echo "ℹ️  $*"; }
+log_warn() { echo "⚠️  $*" >&2; }
+log_info() { echo "ℹ️  $*"; }
 
 debug() {
   if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then "$@"; else "$@" &>/dev/null; fi
@@ -115,45 +115,47 @@ stop_if_sourced() {
 about() {
   local args=()
 
-  if [ $# -eq 0 ]; then
-    echo -n "What commands are you asking about?> "
-    read -r input
-    read -ra args <<<"$input" # Split input into array
+  if [ "$#" -eq 0 ]; then
+    if [[ $- == *i* ]]; then
+      echo -n "What commands are you asking about?> "
+      read -r input
+      read -ra args <<<"$input" # Split input into array
+    else
+      echo "ℹ️  No arguments passed and shell is non-interactive — skipping prompt." >&2
+      return 1
+    fi
   else
     args=("$@")
   fi
 
   echo "command (builtin)    - prints a description for the command"
-  echo "type (builtin)       - indicate how it would be interpreted if used as a command name"
-  whatis whatis || true
-  whatis which || true
+  echo "type (builtin)       - indicates how it would be interpreted as a command name"
+  whatis whatis 2>/dev/null || true
+  whatis which 2>/dev/null || true
   echo
 
   for cmd in "${args[@]}"; do
-    if ! command_exists "$cmd" >/dev/null 2>&1; then
-      command_exists_debug "$cmd"
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      echo "❌ Command not found: $cmd"
       continue
     fi
+
     echo "🔍 Command: $cmd"
 
-    echo -n "📄 type:    "
+    echo -n "📄 type:         "
     type_result=$(type -t "$cmd" 2>/dev/null || true)
-    if [[ -z "$type_result" ]]; then
-      echo "Not found"
-      continue
+    echo "${type_result:-Not found}"
+
+    echo -n "❓ whatis:       "
+    whatis "$cmd" 2>/dev/null || echo "No man page info found"
+
+    if [[ "$type_result" != "function" ]]; then
+      echo -n "📍 which:        "
+      which "$cmd" 2>/dev/null || echo "Not found"
     fi
-    echo "$type_result"
 
-    echo -n "❓ whatis:  "
-    if ! whatis "$cmd" 2>/dev/null; then
-      echo "No man page info found"
-    fi
-
-    echo -n "📍 which:   "
-    which "$cmd"
-
-    echo -n "📦 command -v: "
-    command -v "$cmd"
+    echo -n "📦 command -v:   "
+    command -v "$cmd" 2>/dev/null || echo "Not found"
 
     echo "────────────────────────────────────────────────────────────────────"
   done
