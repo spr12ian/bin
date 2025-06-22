@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# Setting -euo pipefail makes the calling shell brittle if there are any problems in bash_functions
 #set -euo pipefail
 
 # shellcheck disable=SC1091
