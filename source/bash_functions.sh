@@ -13,32 +13,44 @@ fi
 printf -v "$__source_bash_functions_guard_var" "1"
 
 # ────────────────────────────────────────────────────────────────────────────────
+# LOGGING
+# ────────────────────────────────────────────────────────────────────────────────
+
+log_error() { echo "❌ $*" >&2; }
+log_warn()  { echo "⚠️  $*" >&2; }
+log_info()  { echo "ℹ️  $*"; }
+
+debug() {
+  if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then "$@"; else "$@" &>/dev/null; fi
+}
+
+log_debug() {
+  debug log_info "[DEBUG] $*"
+}
+
+# ────────────────────────────────────────────────────────────────────────────────
+# GUARDS
+# ────────────────────────────────────────────────────────────────────────────────
+
+is_sourced() {
+  [[ "${BASH_SOURCE[0]}" != "${0}" ]]
+}
+
+stop_if_executed_directly() {
+  if ! is_sourced; then
+    log_error "${BASH_SOURCE[0]} must not be executed directly."
+    return 1
+  fi
+}
+
+# Only enforce if needed:
+stop_if_executed_directly
+
+# ────────────────────────────────────────────────────────────────────────────────
 # Constants and Initial Setup
 # ────────────────────────────────────────────────────────────────────────────────
 SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
 DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename -- "$0").log}"
-
-# ────────────────────────────────────────────────────────────────────────────────
-# Logging
-# ────────────────────────────────────────────────────────────────────────────────
-# Basic logger: always show errors and warnings
-log_error() { echo "❌ $*" >&2; }
-log_warn() { echo "⚠️  $*" >&2; }
-log_info() { echo "ℹ️  $*"; }
-
-# Optional debug output: calls command quietly unless DEBUG is set
-debug() {
-  if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then
-    "$@"
-  else
-    "$@" &>/dev/null
-  fi
-}
-
-# Logging via debug(), conditional on DEBUG
-log_debug() {
-  debug log_info "[DEBUG] $*"
-}
 
 # Log when sourced
 log_sourced() {
