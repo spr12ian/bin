@@ -468,25 +468,44 @@ nvm() {
   nvm "$@"
 }
 
+# Map of verified safe local commands
+declare -A _RUN_LOCAL_SAFE_CACHE=()
+
 run_local() {
   local cmd="$1"
   shift
-
   local local_cmd="$SYMLINKS_BIN_DIR/$cmd"
 
+  # Check cache first
+  if [[ "${_RUN_LOCAL_SAFE_CACHE[$cmd]-}" == "safe" ]]; then
+    "$local_cmd" "$@" || {
+      echo "⚠️ Command '$cmd' failed. Skipping." >&2
+      return 0
+    }
+    return 0
+  fi
+
+  # First-time check
   if [ ! -x "$local_cmd" ]; then
-    log_warn "Command '$cmd' not found or not executable in $SYMLINKS_BIN_DIR."
-    return 1
+    echo "⚠️ Command '$cmd' not found or not executable in $SYMLINKS_BIN_DIR. Skipping." >&2
+    _RUN_LOCAL_SAFE_CACHE["$cmd"]="missing"
+    return 0
   fi
 
   local resolved
-  resolved="$(command -v "$cmd" 2>/dev/null)"
+  resolved="$(command -v "$cmd" 2>/dev/null || true)"
   if [ "$resolved" != "$local_cmd" ]; then
-    log_warn "Command '$cmd' is not resolved to $SYMLINKS_BIN_DIR first in PATH (resolved to $resolved)."
-    return 1
+    echo "⚠️ Command '$cmd' is not resolved to $SYMLINKS_BIN_DIR first in PATH (resolved to $resolved). Skipping." >&2
+    _RUN_LOCAL_SAFE_CACHE["$cmd"]="wrong_path"
+    return 0
   fi
 
-  "$local_cmd" "$@"
+  # Safe → cache this fact
+  _RUN_LOCAL_SAFE_CACHE["$cmd"]="safe"
+  "$local_cmd" "$@" || {
+    echo "⚠️ Command '$cmd' failed. Skipping." >&2
+    return 0
+  }
 }
 
 source_if_exists() {
