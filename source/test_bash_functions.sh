@@ -6,6 +6,8 @@
 # shellcheck disable=SC1091
 source "$HOME/.symlinks/source/bash_functions"
 
+source_if_exists "$HOME/.symlinks/source/bash_functions"
+
 about about
 
 print_path
