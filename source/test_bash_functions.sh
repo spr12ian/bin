@@ -8,4 +8,8 @@ source "$HOME/.symlinks/source/bash_functions"
 
 about about
 
+vcode bin
+
+code /tmp/test_bash_functions.log
+
 echo "test_bash_functions completed successfully."
