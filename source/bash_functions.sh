@@ -544,6 +544,18 @@ vcode() {
   code "$workspace_file"
 }
 
+_vcode_autocomplete() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local project_dir="$HOME/projects"
+    local projects
+
+    # Only complete if not using --all
+    if [[ "$COMP_CWORD" -ge 1 && "${COMP_WORDS[1]}" != --all ]]; then
+        projects=$(find "$project_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
+        readarray -t COMPREPLY < <(compgen -W "$projects" -- "$cur")
+    fi
+}
+
 main() {
   # Only enforce if needed:
   stop_if_executed_directly
