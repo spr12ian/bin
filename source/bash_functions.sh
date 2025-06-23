@@ -382,6 +382,19 @@ link_scripts_in_dir() {
   echo "✅ Symbolic links created in ${target_dir} for all .sh files in ${original_dir}"
 }
 
+print_path() {
+    local i=1
+    echo "🔍 Current \$PATH entries:"
+    echo "$PATH" | tr ':' '\n' | while read -r dir; do
+        if [ -d "$dir" ]; then
+            printf "%2d. ✅ %s\n" "$i" "$dir"
+        else
+            printf "%2d. ❌ %s (not a directory)\n" "$i" "$dir"
+        fi
+        i=$((i + 1))
+    done
+}
+
 # Resolve symlinks to get the actual file path
 resolve_command_path() {
   local cmd="$1"

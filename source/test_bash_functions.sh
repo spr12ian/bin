@@ -8,6 +8,8 @@ source "$HOME/.symlinks/source/bash_functions"
 
 about about
 
+print_path
+
 vcode bin
 
 code /tmp/test_bash_functions.log
