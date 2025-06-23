@@ -333,7 +333,7 @@ command_exists_debug() {
 
 # Detect if we're being run as part of VS Code's userEnvProbe
 is_user_env_probe() {
-    ps -eo pid,ppid,args | awk '
+  ps -eo pid,ppid,args | awk '
         NR > 1 {
             pid[$1] = $2
             cmd[$1] = substr($0, index($0,$3))
@@ -458,6 +458,16 @@ install_pipx_package() {
   log_function_finish
 }
 
+# Lazy-load nvm (significant speed improvement)
+nvm() {
+  unset -f nvm
+  # shellcheck disable=SC1091
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  # shellcheck disable=SC1091
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  nvm "$@"
+}
+
 run_local() {
   local cmd="$1"
   shift
@@ -545,15 +555,15 @@ vcode() {
 }
 
 _vcode_autocomplete() {
-    local cur="${COMP_WORDS[COMP_CWORD]}"
-    local project_dir="$HOME/projects"
-    local projects
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local project_dir="$HOME/projects"
+  local projects
 
-    # Only complete if not using --all
-    if [[ "$COMP_CWORD" -ge 1 && "${COMP_WORDS[1]}" != --all ]]; then
-        projects=$(find "$project_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
-        readarray -t COMPREPLY < <(compgen -W "$projects" -- "$cur")
-    fi
+  # Only complete if not using --all
+  if [[ "$COMP_CWORD" -ge 1 && "${COMP_WORDS[1]}" != --all ]]; then
+    projects=$(find "$project_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null)
+    readarray -t COMPREPLY < <(compgen -W "$projects" -- "$cur")
+  fi
 }
 
 main() {
