@@ -10,13 +10,15 @@ about about
 
 print_path
 
-add_path_if_exists "$HOME/projects"
+add_path_if_exists before "$HOME/projects"
 
 print_path
 
 remove_path "$HOME/projects"
 
 print_path
+
+add_path_if_exists "$HOME/projects"
 
 vcode bin
 

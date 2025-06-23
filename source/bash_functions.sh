@@ -165,25 +165,36 @@ add_path_if_exists() {
   local position="$1"
   shift
 
-  local dir resolved # Declare function-local variables
+  # Validate position
+  case "$position" in
+    before|after) ;;
+    *)
+      echo "❌ Invalid position: $position (use 'before' or 'after')" >&2
+      return 1
+      ;;
+  esac
+
+  local dir resolved added=0
 
   for dir in "$@"; do
-    # Expand and validate directory
-    if [[ -z "$dir" || ! -d "$dir" ]]; then
-      return
-    fi
-    resolved=$(realpath -m "$dir" 2>/dev/null) || return
+    # Skip empty or non-directory arguments
+    [[ -z "$dir" || ! -d "$dir" ]] && continue
 
-    # Already in PATH?
-    [[ ":$PATH:" == *":$resolved:"* ]] && return
+    resolved=$(realpath -m "$dir" 2>/dev/null) || continue
 
-    # Add to PATH
+    # Skip if already in PATH
+    [[ ":$PATH:" == *":$resolved:"* ]] && continue
+
+    # Add to PATH in requested position
     case "$position" in
-    before) PATH="$resolved:$PATH" ;;
-    after) PATH="$PATH:$resolved" ;;
-    *) echo "Invalid position: $position (use 'before' or 'after')" >&2 ;;
+      before) PATH="$resolved:$PATH" ;;
+      after)  PATH="$PATH:$resolved" ;;
     esac
+
+    added=1
   done
+
+  return "$added"  # return 0 if at least one path added, 1 otherwise
 }
 
 link_home_dotfiles() {
