@@ -6,11 +6,20 @@
 # Do NOT use `set -euo pipefail` globally in a sourced file.
 # ────────────────────────────────────────────────────────────────────────────────
 
+# ────────────────────────────────────────────────────────────────────────────────
+# GUARD TO PREVENT DOUBLE-SOURCING
+# ────────────────────────────────────────────────────────────────────────────────
 __source_bash_functions_guard_var="__SOURCE_BASH_FUNCTIONS_LOADED"
 if [[ "${!__source_bash_functions_guard_var:-}" == "1" ]]; then
   return 0
 fi
 printf -v "$__source_bash_functions_guard_var" "1"
+
+# ────────────────────────────────────────────────────────────────────────────────
+# CONSTANTS
+# ────────────────────────────────────────────────────────────────────────────────
+SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
+DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename -- "$0").log}"
 
 # ────────────────────────────────────────────────────────────────────────────────
 # LOGGING
@@ -22,39 +31,6 @@ log_info() { echo "ℹ️  $*"; }
 
 debug() {
   if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then "$@"; else "$@" &>/dev/null; fi
-}
-
-log_debug() {
-  debug log_info "[DEBUG] $*"
-}
-
-# ────────────────────────────────────────────────────────────────────────────────
-# GUARDS
-# ────────────────────────────────────────────────────────────────────────────────
-
-is_sourced() {
-  [[ "${BASH_SOURCE[0]}" != "${0}" ]]
-}
-
-stop_if_executed_directly() {
-  if ! is_sourced; then
-    log_error "${BASH_SOURCE[0]} must not be executed directly."
-    return 1
-  fi
-}
-
-# Only enforce if needed:
-stop_if_executed_directly
-
-# ────────────────────────────────────────────────────────────────────────────────
-# Constants and Initial Setup
-# ────────────────────────────────────────────────────────────────────────────────
-SYMLINKS_BIN_DIR="${SYMLINKS_BIN_DIR:-$HOME/.symlinks/bin}"
-DEBUG_LOG="${DEBUG_LOG:-/tmp/$(basename -- "$0").log}"
-
-# Log when sourced
-log_sourced() {
-  debug log_info "Sourced: ${BASH_SOURCE[1]} (by ${BASH_SOURCE[2]:-shell})"
 }
 
 # Function-level debug logging with indentation
@@ -72,9 +48,46 @@ _debug_log() {
 log_function_start() { _debug_log "→ Starting ${FUNCNAME[1]}"; }
 log_function_finish() { _debug_log "← Finished ${FUNCNAME[1]}"; }
 
+log_debug() {
+  debug log_info "[DEBUG] $*"
+}
+
 # ────────────────────────────────────────────────────────────────────────────────
-# Guard to Prevent Re-sourcing
+# SCRIPT LOADING BEHAVIOUR
 # ────────────────────────────────────────────────────────────────────────────────
+
+is_executed_directly() {
+  [[ "${BASH_SOURCE[0]}" == "${0}" ]]
+}
+
+is_sourced() {
+  ! is_executed_directly
+}
+
+# Log when sourced
+log_sourced() {
+  debug log_info "Sourced: ${BASH_SOURCE[1]} (by ${BASH_SOURCE[2]:-shell})"
+}
+
+stop_if_executed_directly() {
+  if is_executed_directly; then
+    log_error "${BASH_SOURCE[0]} must not be executed directly."
+    return 1
+  fi
+}
+
+stop_if_sourced() {
+  if ! is_executed_directly; then
+    log_error "${BASH_SOURCE[0]} must not be sourced."
+    return 1
+  fi
+}
+
+# ────────────────────────────────────────────────────────────────────────────────
+# FUNCTIONS
+# ────────────────────────────────────────────────────────────────────────────────
+
+# Usage guard_source __SOURCE_BASH_FUNCTIONS_LOADED i.e. name unique per sourced script
 guard_source() {
   local guard_var="$1"
   if [[ "${!guard_var:-}" == "1" ]]; then
@@ -84,33 +97,6 @@ guard_source() {
   printf -v "$guard_var" "1"
   log_debug "Guard '$guard_var' set, sourcing for the first time."
 }
-
-guard_source __SOURCE_BASH_FUNCTIONS_LOADED
-
-# ────────────────────────────────────────────────────────────────────────────────
-# Execution Detection
-# ────────────────────────────────────────────────────────────────────────────────
-is_this_script_executed() {
-  [[ "${BASH_SOURCE[0]}" == "${0}" ]]
-}
-
-stop_if_executed() {
-  if is_this_script_executed; then
-    log_error "${BASH_SOURCE[0]} must not be executed"
-    return 1
-  fi
-}
-
-stop_if_sourced() {
-  if ! is_this_script_executed; then
-    log_error "${BASH_SOURCE[0]} must not be sourced."
-    return 1
-  fi
-}
-
-# ────────────────────────────────────────────────────────────────────────────────
-# Utility
-# ────────────────────────────────────────────────────────────────────────────────
 
 about() {
   local args=()
@@ -167,11 +153,11 @@ add_path_if_exists() {
 
   # Validate position
   case "$position" in
-    before|after) ;;
-    *)
-      echo "❌ Invalid position: $position (use 'before' or 'after')" >&2
-      return 1
-      ;;
+  before | after) ;;
+  *)
+    echo "❌ Invalid position: $position (use 'before' or 'after')" >&2
+    return 1
+    ;;
   esac
 
   local dir resolved added=0
@@ -187,14 +173,14 @@ add_path_if_exists() {
 
     # Add to PATH in requested position
     case "$position" in
-      before) PATH="$resolved:$PATH" ;;
-      after)  PATH="$PATH:$resolved" ;;
+    before) PATH="$resolved:$PATH" ;;
+    after) PATH="$PATH:$resolved" ;;
     esac
 
     added=1
   done
 
-  return "$added"  # return 0 if at least one path added, 1 otherwise
+  return "$added" # return 0 if at least one path added, 1 otherwise
 }
 
 link_home_dotfiles() {
@@ -280,6 +266,11 @@ install_apt_package() {
   log_function_finish
 }
 
+# Optional debug logging
+_log_debug() {
+  [[ "${DEBUG:-}" =~ ^(1|true|TRUE)$ ]] && echo "DEBUG: $*" >&2
+}
+
 # Check if a command exists and is usable
 command_exists() {
   local cmd="$1"
@@ -338,6 +329,24 @@ command_exists_debug() {
   fi
 
   return 0
+}
+
+# Detect if we're being run as part of VS Code's userEnvProbe
+is_user_env_probe() {
+    ps -eo pid,ppid,args | awk '
+        NR > 1 {
+            pid[$1] = $2
+            cmd[$1] = substr($0, index($0,$3))
+        }
+        END {
+            p = ENVIRON["PPID"]
+            while (p > 1) {
+                if (cmd[p] ~ /userEnvProbe/) exit 0
+                p = pid[p]
+            }
+            exit 1
+        }
+    '
 }
 
 link_scripts_in_dir() {
@@ -535,9 +544,10 @@ vcode() {
   code "$workspace_file"
 }
 
-# ────────────────────────────────────────────────────────────────────────────────
-# Post-load Source Message
-# ────────────────────────────────────────────────────────────────────────────────
-if ! is_this_script_executed; then
+main() {
+  # Only enforce if needed:
+  stop_if_executed_directly
   log_sourced
-fi
+}
+
+main
