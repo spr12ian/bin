@@ -162,28 +162,28 @@ about() {
 }
 
 add_path_if_exists() {
-    local position="$1"
-    shift
+  local position="$1"
+  shift
 
-    local dir resolved # Declare function-local variables
+  local dir resolved # Declare function-local variables
 
-    for dir in "$@"; do
-        # Expand and validate directory
-        if [[ -z "$dir" || ! -d "$dir" ]]; then
-            return
-        fi
-        resolved=$(realpath -m "$dir" 2>/dev/null) || return
+  for dir in "$@"; do
+    # Expand and validate directory
+    if [[ -z "$dir" || ! -d "$dir" ]]; then
+      return
+    fi
+    resolved=$(realpath -m "$dir" 2>/dev/null) || return
 
-        # Already in PATH?
-        [[ ":$PATH:" == *":$resolved:"* ]] && return
+    # Already in PATH?
+    [[ ":$PATH:" == *":$resolved:"* ]] && return
 
-        # Add to PATH
-        case "$position" in
-        before) PATH="$resolved:$PATH" ;;
-        after) PATH="$PATH:$resolved" ;;
-        *) echo "Invalid position: $position (use 'before' or 'after')" >&2 ;;
-        esac
-    done
+    # Add to PATH
+    case "$position" in
+    before) PATH="$resolved:$PATH" ;;
+    after) PATH="$PATH:$resolved" ;;
+    *) echo "Invalid position: $position (use 'before' or 'after')" >&2 ;;
+    esac
+  done
 }
 
 link_home_dotfiles() {
@@ -383,16 +383,21 @@ link_scripts_in_dir() {
 }
 
 print_path() {
-    local i=1
-    echo "🔍 Current \$PATH entries:"
-    echo "$PATH" | tr ':' '\n' | while read -r dir; do
-        if [ -d "$dir" ]; then
-            printf "%2d. ✅ %s\n" "$i" "$dir"
-        else
-            printf "%2d. ❌ %s (not a directory)\n" "$i" "$dir"
-        fi
-        i=$((i + 1))
-    done
+  local i=1
+  echo "🔍 Current \$PATH entries:"
+  echo "$PATH" | tr ':' '\n' | while read -r dir; do
+    if [ -d "$dir" ]; then
+      printf "%2d. ✅ %s\n" "$i" "$dir"
+    else
+      printf "%2d. ❌ %s (not a directory)\n" "$i" "$dir"
+    fi
+    i=$((i + 1))
+  done
+}
+
+remove_path() {
+  local remove="$1"
+  PATH=$(echo "$PATH" | tr ':' '\n' | grep -v -x "$remove" | paste -sd:)
 }
 
 # Resolve symlinks to get the actual file path
@@ -463,60 +468,60 @@ source_if_exists() {
 }
 
 vcode() {
-    local base_dir="${HOME}/projects"
+  local base_dir="${HOME}/projects"
 
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: vcode [project1 project2 ...] or vcode --all"
-        return 0
+  if [[ $# -eq 0 ]]; then
+    echo "Usage: vcode [project1 project2 ...] or vcode --all"
+    return 0
+  fi
+
+  if [[ $# -eq 1 && -f "${VSCODE_WORKSPACE_DIR}/$1.code-workspace" ]]; then
+    # Use existing named workspace file
+    code "${VSCODE_WORKSPACE_DIR}/$1.code-workspace"
+    return 0
+  fi
+
+  # Else, build a temporary workspace file
+  local tmp_workspace_dir="/tmp/vcode_workspace_$$"
+  mkdir -p "$tmp_workspace_dir"
+  local workspace_file="${tmp_workspace_dir}/workspace.code-workspace"
+
+  local folders=()
+
+  if [[ "$1" == "--all" ]]; then
+    # Include all immediate subdirectories of ~/projects/
+    while IFS= read -r -d '' dir; do
+      folders+=("{\"path\": \"$dir\"}")
+    done < <(find "$base_dir" -mindepth 1 -maxdepth 1 -type d -print0)
+
+    if [[ ${#folders[@]} -eq 0 ]]; then
+      echo "⚠️ No subdirectories found under $base_dir"
+      return 0
     fi
+  else
+    # Manually specified projects
+    for project in "$@"; do
+      local dir="$base_dir/$project"
+      if [[ ! -d "$dir" ]]; then
+        echo "❌ '$project' does not exist in $base_dir"
+        continue
+      fi
+      folders+=("{\"path\": \"$dir\"}")
+    done
 
-    if [[ $# -eq 1 && -f "${VSCODE_WORKSPACE_DIR}/$1.code-workspace" ]]; then
-        # Use existing named workspace file
-        code "${VSCODE_WORKSPACE_DIR}/$1.code-workspace"
-        return 0
+    if [[ ${#folders[@]} -eq 0 ]]; then
+      echo "🚫 No valid projects to open"
+      return 0
     fi
+  fi
 
-    # Else, build a temporary workspace file
-    local tmp_workspace_dir="/tmp/vcode_workspace_$$"
-    mkdir -p "$tmp_workspace_dir"
-    local workspace_file="${tmp_workspace_dir}/workspace.code-workspace"
+  # Write workspace JSON
+  printf '{\n  "folders": [\n    %s\n  ]\n}\n' "$(
+    IFS=,$'\n'
+    echo "${folders[*]}"
+  )" >"$workspace_file"
 
-    local folders=()
-
-    if [[ "$1" == "--all" ]]; then
-        # Include all immediate subdirectories of ~/projects/
-        while IFS= read -r -d '' dir; do
-            folders+=("{\"path\": \"$dir\"}")
-        done < <(find "$base_dir" -mindepth 1 -maxdepth 1 -type d -print0)
-
-        if [[ ${#folders[@]} -eq 0 ]]; then
-            echo "⚠️ No subdirectories found under $base_dir"
-            return 0
-        fi
-    else
-        # Manually specified projects
-        for project in "$@"; do
-            local dir="$base_dir/$project"
-            if [[ ! -d "$dir" ]]; then
-                echo "❌ '$project' does not exist in $base_dir"
-                continue
-            fi
-            folders+=("{\"path\": \"$dir\"}")
-        done
-
-        if [[ ${#folders[@]} -eq 0 ]]; then
-            echo "🚫 No valid projects to open"
-            return 0
-        fi
-    fi
-
-    # Write workspace JSON
-    printf '{\n  "folders": [\n    %s\n  ]\n}\n' "$(
-        IFS=,$'\n'
-        echo "${folders[*]}"
-    )" >"$workspace_file"
-
-    code "$workspace_file"
+  code "$workspace_file"
 }
 
 # ────────────────────────────────────────────────────────────────────────────────

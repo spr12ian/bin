@@ -10,6 +10,14 @@ about about
 
 print_path
 
+add_path_if_exists "$HOME/projects"
+
+print_path
+
+remove_path "$HOME/projects"
+
+print_path
+
 vcode bin
 
 code /tmp/test_bash_functions.log
