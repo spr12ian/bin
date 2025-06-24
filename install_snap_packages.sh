@@ -2,15 +2,14 @@
 set -euo pipefail
 
 install_snap() {
-  snap_name="$1"
-  classic_flag="$2"  # Store the classic flag
+  local snap_name="$1"
+  local classic_flag="${2:-}"  # Default to empty string if not passed
 
-  # Check if the snap package is listed in `snap list`
   if snap list "$snap_name" &> /dev/null; then
     echo "$snap_name is already installed. Refreshing..."
     sudo snap refresh "$snap_name"
   else
-    if [[ "$classic_flag" == "--classic" ]]; then # Use [[ ]] for string comparison
+    if [[ "$classic_flag" == "--classic" ]]; then
       echo "Installing $snap_name with classic confinement..."
       sudo snap install "$snap_name" --classic
     else
@@ -21,10 +20,10 @@ install_snap() {
 }
 
 # Install snaps with appropriate confinement
-#install_snap code --classic  # Code with classic
-install_snap go --classic    # Go with classic
-install_snap hugo            # Hugo (default confinement)
-install_snap node --classic  # Node with classic
-install_snap sqlitebrowser   # SQLite Browser (default confinement)
+# install_snap code --classic
+install_snap go --classic
+install_snap hugo
+install_snap node --classic
+install_snap sqlitebrowser
 
 echo "Installation/Refresh complete."

@@ -9,5 +9,8 @@ fi
 
 install_apt_package openssh-server
 
+sudo systemctl daemon-reload
+
 # Check the server is running
-sudo systemctl status ssh
+sudo systemctl --no-pager status ssh
+

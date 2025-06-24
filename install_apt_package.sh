@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SYMLINKS_SOURCE_DIR="$HOME/.symlinks/source"
 # shellcheck disable=SC1091
-source "${SYMLINKS_SOURCE_DIR}/bash-functions"
+source "${SYMLINKS_SOURCE_DIR}/bash_functions"
 
 # Check argument
 if [[ $# -ne 1 ]]; then

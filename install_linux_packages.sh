@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-setup_symbolic_links # Create symbolic links for these commands to work
+# shellcheck disable=SC1091
+source "$SYMLINKS_SOURCE_DIR/bash_functions"
+
+setup_symbolic_links   # Create symbolic links for these commands to work
+                       # Until they are all functions
 
 install_docker         # Learning about FastAPI, Docker is essential
 install_gh             # GitHub CLI for managing GitHub repositories
