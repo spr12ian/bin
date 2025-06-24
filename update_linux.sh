@@ -4,7 +4,7 @@ set -euo pipefail
 sudo apt update
 sudo apt upgrade -y
 
-install-linux-packages
+install_linux_packages
 
 sudo apt --purge autoremove -y
 
