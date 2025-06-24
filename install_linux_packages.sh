@@ -16,6 +16,7 @@ install_pipx           # install and run Python applications in isolated environ
 install_poppler_utils  # PDF utilities
 install_python         # Python programming language
 install_rust           # Rust programming language
+install_shellcheck     # Shell script analysis tool
 install_snap_packages  # Snap package manager
 install_sqlite3        # sql command line
 install_tree           # list contents of directories in a tree-like format
