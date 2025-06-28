@@ -516,6 +516,10 @@ source_if_exists() {
   fi
 }
 
+tree() {
+  python3 "$HOME/projects/python_utilities/tree.py" "$@"
+}
+
 vcode() {
   local base_dir="${HOME}/projects"
 
