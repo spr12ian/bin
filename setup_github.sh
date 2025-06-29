@@ -12,8 +12,8 @@ fi
 
 setup_git
 
-if [ -z "${GITHUB_PARENT}" ]; then
-    echo "Environment variable GITHUB_PARENT is NOT set"
+if [ -z "${GITHUB_PARENT_DIR}" ]; then
+    echo "Environment variable GITHUB_PARENT_DIR is NOT set"
     exit 1
 fi
 

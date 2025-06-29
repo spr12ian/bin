@@ -11,14 +11,14 @@ else
     exit 1
 fi
 
-repoDirectory="${GITHUB_PARENT}/${repo}"
+repoDirectory="${GITHUB_PARENT_DIR}/${repo}"
 if [ -d "${repoDirectory}" ]; then
     echo "${repoDirectory} already exists"
     exit 1
 fi
 
-cd "${GITHUB_PARENT}" || {
-    echo cd "${GITHUB_PARENT}" failed
+cd "${GITHUB_PARENT_DIR}" || {
+    echo cd "${GITHUB_PARENT_DIR}" failed
     exit 1
 }
 

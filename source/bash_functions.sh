@@ -237,7 +237,7 @@ command_type() {
 }
 
 setup_symbolic_links() {
-  local project_dir="${GITHUB_PARENT:-$HOME}/bin"
+  local project_dir="${GITHUB_PARENT_DIR:-$HOME}/bin"
   local symlinks_dir="$HOME/.symlinks"
 
   link_scripts_in_dir "${project_dir}" "$symlinks_dir/bin" 700

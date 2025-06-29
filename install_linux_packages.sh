@@ -19,6 +19,6 @@ install_python                 # Python programming language
 install_rust                   # Rust programming language
 install_apt_package shellcheck # Shell script analysis tool
 install_snap_packages          # Snap package manager
-install_sqlite3                # sql command line
+install_apt_package  sqlite3   # sql command line
 install_tesseract_ocr          # Optical Character Recognition
 install_vs_code                # Visual Studio Code for code editing

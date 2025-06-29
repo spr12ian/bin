@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-original_dir="${GITHUB_PARENT}/bin"
+original_dir="${GITHUB_PARENT_DIR}/bin"
 target_dir="$HOME/.symlinks/bin"
 
 # Check original directory

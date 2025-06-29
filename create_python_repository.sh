@@ -13,7 +13,7 @@ if ! create_github_repository "${repo}" "Python"; then
     exit 1
 fi
 
-repoDirectory="${GITHUB_PARENT}/${repo}"
+repoDirectory="${GITHUB_PARENT_DIR}/${repo}"
 
 cd "${repoDirectory}" || {
     echo cd "${repoDirectory}" failed

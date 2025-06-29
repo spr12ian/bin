@@ -32,8 +32,6 @@ gh repo clone "${GITHUB_USER_NAME}"/bin
 focus_here
 ```
 
-
-
 snap is preinstalled on Ubuntu systems, but not yet on ChromeOS Debian so the next step on ChromeOS is
 
 ```
@@ -41,11 +39,13 @@ install_snap_on_chromeos
 ```
 
 Now that snap is installed
+
 ```
 install_snap_packages
 ```
 
 Every now and then refresh your snap packages
+
 ```
 sudo snap refresh
 ```
@@ -57,37 +57,41 @@ On a new Linux user login:
 mkdir ~/bin
 cd ~/bin
 
-chmod u+x *
+chmod u+x \*
 chmod u-x README.md
 
 git init
 git add .
-git update-index --chmod=+x *
+git update-index --chmod=+x \*
 git update-index --chmod=-x README.md
 
 ## To Do
 
 ## trap
+
 # enable
+
 trap 'echo "Executing: $BASH_COMMAND"' DEBUG
+
 # disable
+
 trap - DEBUG
 
 sudo apt-get install shellcheck
 
-``` bash
+```bash
 #!/bin/bash
 
 
 mkdir -p ~/.local
-ln -s "${GITHUB_PARENT}"/bin ~/.local/bin
+ln -s "${GITHUB_PARENT_DIR}"/bin ~/.local/bin
 ```
 
 if [ -d ~/bin ]; then
- echo folder ~/bin already exists
- else
- mkdir ~/bin
- echo folder ~/bin created
+echo folder ~/bin already exists
+else
+mkdir ~/bin
+echo folder ~/bin created
 fi
 
 exit
@@ -112,16 +116,19 @@ install_snap_on_chromeos
 ```
 
 Now that snap is installed
+
 ```
 install_snap_packages
 ```
 
 Every now and then refresh your snap packages
+
 ```
 sudo snap refresh
 ```
 
 To do Google App Script (GAS) development locally I use clasp
+
 ```
 install_clasp
 ```
@@ -133,10 +140,10 @@ On a new Linux user login:
 mkdir ~/bin
 cd ~/bin
 
-chmod u+x *
+chmod u+x \*
 chmod u-x README.md
 
 git init
 git add .
-git update-index --chmod=+x *
+git update-index --chmod=+x \*
 git update-index --chmod=-x README.md
