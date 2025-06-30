@@ -23,7 +23,6 @@ install_snap() {
 # install_snap code --classic
 install_snap go --classic
 install_snap hugo
-install_snap node --classic
 install_snap sqlitebrowser
 
 echo "Installation/Refresh complete."
