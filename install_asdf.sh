@@ -11,12 +11,17 @@ fi
 
 asdf --version
 
-# Import Node.js release team's GPG keys (essential step)
-echo "✅ Importing GPG keys..."
-bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+# Add Node.js plugin if not already added
+if asdf plugin list | grep -q "^nodejs$"; then
+  echo "✅ Node.js plugin already added..."
+else
+  echo "✅ Adding Node.js plugin..."
+  asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+fi
 
 # Then install Node.js
 echo "✅ Installing Node.js..."
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf install nodejs latest
 asdf global nodejs latest
+
+node --version

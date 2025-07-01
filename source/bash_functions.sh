@@ -458,16 +458,6 @@ install_pipx_package() {
   log_function_finish
 }
 
-# Lazy-load nvm (significant speed improvement)
-nvm() {
-  unset -f nvm
-  # shellcheck disable=SC1091
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  # shellcheck disable=SC1091
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  nvm "$@"
-}
-
 # Define a lazy loader for asdf
 _asdf_lazy_load() {
   # Unset the function so this runs only once
