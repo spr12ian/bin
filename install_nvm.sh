@@ -62,7 +62,6 @@ else
         print_info "nvm is now ready to use in this shell."
 
         nvm install --lts
-        nvm use --lts
     else
         print_error "Installation completed, but nvm directory not found!"
         exit 1
