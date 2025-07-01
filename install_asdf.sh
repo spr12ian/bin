@@ -9,14 +9,8 @@ fi
 
 asdf --version
 
-
-
-
-
-
 # Import Node.js release team's GPG keys (essential step)
 bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
-
 
 # Then install Node.js
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
