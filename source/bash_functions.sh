@@ -468,17 +468,44 @@ nvm() {
   nvm "$@"
 }
 
-# Lazy-load asdf (significant speed improvement)
-asdf() {
+# Define a lazy loader for asdf
+_asdf_lazy_load() {
+  # Unset the function so this runs only once
   unset -f asdf
-  if [ -d "$HOME/.asdf" ]; then
-    # shellcheck disable=SC1091
-    source "$HOME/.asdf/asdf.sh"
-    # shellcheck disable=SC1091
-    source "$HOME/.asdf/completions/asdf.bash"
-    asdf "$@"
+  unset -f node
+  unset -f npm
+  unset -f npx
+  unset -f yarn # if you use yarn via asdf
+  unset -f pnpm # if you use pnpm via asdf
+
+  ASDF_DIR="$HOME/.asdf"
+
+  if [ -d "$ASDF_DIR" ]; then
+    export ASDF_DIR
+    # Prepend shims to PATH
+    export PATH="$ASDF_DIR/shims:$PATH"
+  else
+    echo "❌ asdf directory not found: $ASDF_DIR" >&2
+    return 1
   fi
+
+  # Source asdf
+  # shellcheck disable=SC1091
+  source "$ASDF_DIR/asdf.sh"
+  # shellcheck disable=SC1091
+  source "$ASDF_DIR/completions/asdf.bash"
+
+  # Re-run the command with all args
+  "$@"
 }
+
+# Stub functions that trigger the lazy loader
+asdf() { _asdf_lazy_load asdf "$@"; }
+node() { _asdf_lazy_load node "$@"; }
+npm() { _asdf_lazy_load npm "$@"; }
+npx() { _asdf_lazy_load npx "$@"; }
+yarn() { _asdf_lazy_load yarn "$@"; }
+pnpm() { _asdf_lazy_load pnpm "$@"; }
 
 # Map of verified safe local commands
 declare -A _RUN_LOCAL_SAFE_CACHE=()
