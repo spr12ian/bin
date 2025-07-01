@@ -468,6 +468,18 @@ nvm() {
   nvm "$@"
 }
 
+# Lazy-load asdf (significant speed improvement)
+asdf() {
+  unset -f asdf
+  if [ -d "$HOME/.asdf" ]; then
+    # shellcheck disable=SC1091
+    source "$HOME/.asdf/asdf.sh"
+    # shellcheck disable=SC1091
+    source "$HOME/.asdf/completions/asdf.bash"
+    asdf "$@"
+  fi
+}
+
 # Map of verified safe local commands
 declare -A _RUN_LOCAL_SAFE_CACHE=()
 
