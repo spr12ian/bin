@@ -183,6 +183,30 @@ add_path_if_exists() {
   return "$added" # return 0 if at least one path added, 1 otherwise
 }
 
+jq_compare() {
+  local file1="$1"
+  local file2="$2"
+
+  if [[ ! -f "$file1" ]]; then
+    echo "❌ File not found: $file1"
+    return 1
+  fi
+
+  if [[ ! -f "$file2" ]]; then
+    echo "❌ File not found: $file2"
+    return 1
+  fi
+
+  if diff_output=$(diff <(jq -S . "$file1") <(jq -S . "$file2")); then
+    echo "✅ Files are identical"
+    return 0
+  else
+    echo "❌ Files differ"
+    echo "$diff_output"
+    return 1
+  fi
+}
+
 link_home_dotfiles() {
   local original_dir="${GITHUB_DOTFILES_DIR:?GITHUB_DOTFILES_DIR not set}"
   local target_dir="$HOME"
