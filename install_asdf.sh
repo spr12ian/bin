@@ -9,6 +9,10 @@ else
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
 fi
 
+# Source asdf to make it available in the current shell
+# shellcheck disable=SC1091
+source "$HOME/.asdf/asdf.sh"
+
 asdf --version
 
 # Add Node.js plugin if not already added
