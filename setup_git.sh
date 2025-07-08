@@ -22,7 +22,7 @@ git config --global core.autocrlf input
 git config --global core.fileMode false
 git config --global core.ignoreCase false
 git config --global init.defaultBranch main
-git config --global pull.rebase false
+git config --global pull.rebase merges
 
 debug echo "Git configurations set successfully."
 
