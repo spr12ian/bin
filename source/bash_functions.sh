@@ -183,6 +183,23 @@ add_path_if_exists() {
   return "$added" # return 0 if at least one path added, 1 otherwise
 }
 
+dedup_path() {
+    local IFS=':'
+    local path_entry
+    local -A seen
+    local new_path=""
+
+    for path_entry in $PATH; do
+        if [[ -n "$path_entry" && -z "${seen[$path_entry]}" ]]; then
+            seen[$path_entry]=1
+            new_path+="${path_entry}:"
+        fi
+    done
+
+    # Remove trailing colon
+    PATH="${new_path%:}"
+}
+
 jq_compare() {
   local file1="$1"
   local file2="$2"
@@ -496,8 +513,7 @@ _asdf_lazy_load() {
 
   if [ -d "$ASDF_DIR" ]; then
     export ASDF_DIR
-    # Prepend shims to PATH
-    export PATH="$ASDF_DIR/shims:$PATH"
+    add_path_if_exists before "$ASDF_DIR/shim"
   else
     echo "❌ asdf directory not found: $ASDF_DIR" >&2
     return 1
