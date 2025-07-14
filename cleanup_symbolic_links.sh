@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-original_dir="${GITHUB_PARENT_DIR}/bin"
+original_dir="${GITHUB_PROJECTS_DIR}/bin"
 target_dir="$HOME/.symlinks/bin"
 
 # Check original directory
@@ -17,11 +17,11 @@ if [ ! -d "${target_dir}" ]; then
 fi
 
 find "$target_dir" -type l | while read -r symlink; do
-    target=$(readlink -f "$symlink")
-    if [[ "$target" == "$original_dir"* ]]; then
-        echo "Removing symlink: $symlink -> $target"
-        rm "$symlink"
-    fi
+  target=$(readlink -f "$symlink")
+  if [[ "$target" == "$original_dir"* ]]; then
+    echo "Removing symlink: $symlink -> $target"
+    rm "$symlink"
+  fi
 done
 
 ls -al "$target_dir"

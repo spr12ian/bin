@@ -3,9 +3,9 @@ set -euo pipefail
 
 focus_here
 
-cd "${GITHUB_PARENT_DIR}/${GITHUB_USER_NAME}.github.io" || {
-    echo "ERROR: ${GITHUB_PARENT_DIR}/${GITHUB_USER_NAME}.github.io not found"
-    exit 1
+cd "${GITHUB_PROJECTS_DIR}/${GITHUB_USER_NAME}.github.io" || {
+  echo "ERROR: ${GITHUB_PROJECTS_DIR}/${GITHUB_USER_NAME}.github.io not found"
+  exit 1
 }
 
 new_blog="hugo new blog/$(date -I).md"

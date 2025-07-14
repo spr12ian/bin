@@ -21,9 +21,9 @@ howManyRepos=${#repos[@]}
 if [ "${howManyRepos}" -gt 0 ]; then
   debug echo "Number of repos: ${howManyRepos}"
 
-  mkdir -p "${GITHUB_PARENT_DIR}"
-  cd "${GITHUB_PARENT_DIR}" || {
-    echo "ERROR: ${GITHUB_PARENT_DIR} not found"
+  mkdir -p "${GITHUB_PROJECTS_DIR}"
+  cd "${GITHUB_PROJECTS_DIR}" || {
+    echo "ERROR: ${GITHUB_PROJECTS_DIR} not found"
     exit 1
   }
   debug echo "Parent directory for GitHub repos: $(pwd)"
@@ -33,7 +33,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
     debug echo "Repository: ${repo}"
 
     if [ ! -d "${repo}" ]; then
-      echo "${GITHUB_PARENT_DIR}/${repo} does NOT exist, cloning ${repo}..."
+      echo "${GITHUB_PROJECTS_DIR}/${repo} does NOT exist, cloning ${repo}..."
       # Try to clone the repository
       if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
         echo "Success: gh repo clone ${GITHUB_USER_NAME}/${repo}"
@@ -41,7 +41,7 @@ if [ "${howManyRepos}" -gt 0 ]; then
         echo "ERROR: gh repo clone ${GITHUB_USER_NAME}/${repo} failed"
       fi
     else
-      echo "Syncing ${GITHUB_PARENT_DIR}/${repo} ..."
+      echo "Syncing ${GITHUB_PROJECTS_DIR}/${repo} ..."
       pushd "${repo}" >/dev/null || {
         echo "ERROR: pushd ${repo} failed"
         continue

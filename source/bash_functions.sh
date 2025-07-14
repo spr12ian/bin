@@ -184,20 +184,20 @@ add_path_if_exists() {
 }
 
 dedup_path() {
-    local IFS=':'
-    local path_entry
-    local -A seen
-    local new_path=""
+  local IFS=':'
+  local path_entry
+  local -A seen
+  local new_path=""
 
-    for path_entry in $PATH; do
-        if [[ -n "$path_entry" && -z "${seen[$path_entry]}" ]]; then
-            seen[$path_entry]=1
-            new_path+="${path_entry}:"
-        fi
-    done
+  for path_entry in $PATH; do
+    if [[ -n "$path_entry" && -z "${seen[$path_entry]}" ]]; then
+      seen[$path_entry]=1
+      new_path+="${path_entry}:"
+    fi
+  done
 
-    # Remove trailing colon
-    PATH="${new_path%:}"
+  # Remove trailing colon
+  PATH="${new_path%:}"
 }
 
 jq_compare() {
@@ -278,7 +278,7 @@ command_type() {
 }
 
 setup_symbolic_links() {
-  local project_dir="${GITHUB_PARENT_DIR:-$HOME}/bin"
+  local project_dir="${GITHUB_PROJECTS_DIR:-$HOME}/bin"
   local symlinks_dir="$HOME/.symlinks"
 
   link_scripts_in_dir "${project_dir}" "$symlinks_dir/bin" 700

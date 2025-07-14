@@ -84,7 +84,7 @@ sudo apt-get install shellcheck
 
 
 mkdir -p ~/.local
-ln -s "${GITHUB_PARENT_DIR}"/bin ~/.local/bin
+ln -s "${GITHUB_PROJECTS_DIR}"/bin ~/.local/bin
 ```
 
 if [ -d ~/bin ]; then

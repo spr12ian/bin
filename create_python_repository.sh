@@ -2,22 +2,22 @@
 set -euo pipefail
 
 if [ $# -eq 1 ]; then
-    repo=$1
+  repo=$1
 else
-    echo "repo name required"
-    exit 1
+  echo "repo name required"
+  exit 1
 fi
 
 if ! create_github_repository "${repo}" "Python"; then
-    echo "create_github_repository ${repo} Python failed"
-    exit 1
+  echo "create_github_repository ${repo} Python failed"
+  exit 1
 fi
 
-repoDirectory="${GITHUB_PARENT_DIR}/${repo}"
+repoDirectory="${GITHUB_PROJECTS_DIR}/${repo}"
 
 cd "${repoDirectory}" || {
-    echo cd "${repoDirectory}" failed
-    exit 1
+  echo cd "${repoDirectory}" failed
+  exit 1
 }
 
 python3 -m venv venv
