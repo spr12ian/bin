@@ -85,7 +85,6 @@ if [ "${howManyRepos}" -gt 0 ]; then
         fi
       fi
 
-
       # Try to fetch the repository
       if ! git fetch origin; then
         echo "ERROR: 'git fetch origin' failed"
@@ -98,7 +97,11 @@ if [ "${howManyRepos}" -gt 0 ]; then
       if [[ "$current_branch" == "main" ]]; then
         new_branch="feat/auto-${GITHUB_USER_NAME}-$(date +%F)"
         echo "Switching to feature branch: $new_branch"
-        git checkout -b "$new_branch" || git checkout "$new_branch"
+        if git checkout -b "$new_branch"; then
+          git push -u origin "$new_branch"
+        else
+          git checkout "$new_branch"
+        fi
         current_branch="$new_branch"
       fi
 
