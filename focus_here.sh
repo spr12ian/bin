@@ -57,20 +57,34 @@ if [ "${howManyRepos}" -gt 0 ]; then
       # Check for unstaged changes
       unstaged_changes=$(git diff --name-only)
 
-      if [[ -n $unstaged_changes ]]; then
-        echo "Unstaged changes detected:"
-        echo "$unstaged_changes"
-        exit 1
-      fi
+      # if [[ -n $unstaged_changes ]]; then
+      #   echo "Unstaged changes detected:"
+      #   echo "$unstaged_changes"
+      #   exit 1
+      # fi
 
       # Check for staged changes
       staged_changes=$(git diff --cached --name-only)
 
-      if [[ -n $staged_changes ]]; then
-        echo "The following files are in the staging area:"
-        echo "$staged_changes"
-        exit 1
+      # if [[ -n $staged_changes ]]; then
+      #   echo "The following files are in the staging area:"
+      #   echo "$staged_changes"
+      #   exit 1
+      # fi
+
+      if [[ -n "$unstaged_changes" || -n "$staged_changes" ]]; then
+        echo "🔧 Detected uncommitted work in $repo"
+
+        if [[ "${AUTO_PUSH_WIP:-true}" == "true" ]]; then
+          echo "💾 Saving WIP changes"
+          git add -A
+          git commit -m "WIP: auto-commit on $(date +%F_%T)" || echo "Nothing to commit"
+          git push || echo "⚠️ Push failed for $repo"
+        else
+          echo "❗ AUTO_PUSH_WIP is disabled; skipping WIP commit"
+        fi
       fi
+
 
       # Try to fetch the repository
       if ! git fetch origin; then
