@@ -188,7 +188,7 @@ main() {
     fi
   done
 
-  wait # Final wait for all jobs
+  wait || true  # Never abort on a background error
   echo "✅ Done"
 
   echo
