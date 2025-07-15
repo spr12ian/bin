@@ -95,6 +95,13 @@ if [ "${howManyRepos}" -gt 0 ]; then
       # Get the current branch name
       current_branch=$(git rev-parse --abbrev-ref HEAD)
 
+      if [[ "$current_branch" == "main" ]]; then
+        new_branch="feat/auto-${GITHUB_USER_NAME}-$(date +%F)"
+        echo "Switching to feature branch: $new_branch"
+        git checkout -b "$new_branch" || git checkout "$new_branch"
+        current_branch="$new_branch"
+      fi
+
       local_commit=$(git rev-parse "$current_branch")
       remote_commit=$(git rev-parse "origin/$current_branch")
       base_commit=$(git merge-base "$current_branch" "origin/$current_branch")
