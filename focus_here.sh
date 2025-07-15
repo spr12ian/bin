@@ -5,7 +5,7 @@ set -euo pipefail
 
 AUTO_PUSH_WIP=${GITHUB_AUTO_PUSH_WIP:-true}
 TAG_EOD=${GITHUB_TAG_EOD:-false}
-LOG_FILE=${GITHUB_LOG_FILE:-"focus_here.log"}
+LOG_FILE=${GITHUB_LOG_FILE:-""}
 REPO_PREFIX="${1:-}"
 
 [[ -n "$LOG_FILE" ]] && exec &> >(tee -a "$LOG_FILE")
