@@ -24,11 +24,11 @@ git config --global core.ignoreCase false
 git config --global init.defaultBranch main
 git config --global pull.rebase merges
 
-git config alias.finish "!f() { \
+git config alias.finish '!f() { \
   git checkout main && git pull && \
-  git merge --squash \"$1\" && \
-  git commit -m \"Squashed merge of $1\" && git push; \
-}; f"
+  git merge --squash "$1" && \
+  git commit -m "Squashed merge of $1" && git push; \
+}; f'
 
 
 debug echo "Git configurations set successfully."
