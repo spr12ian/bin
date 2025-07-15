@@ -8,6 +8,9 @@ else
   set +x # Disable debugging
 fi
 
+AUTO_PUSH_WIP=${GITHUB_AUTO_PUSH_WIP:-true}
+TAG_EOD=${GITHUB_TAG_EOD:-false}
+
 setup_github
 
 # List public repositories for a specific user
@@ -137,6 +140,13 @@ if [ "${howManyRepos}" -gt 0 ]; then
         exit 1
       }
       debug echo "Current directory: $(pwd)"
+    fi
+
+    if [[ "${TAG_EOD:-false}" == "true" ]]; then
+      tag="eod-${repo}-$(date +%F)"
+      echo "📌 Tagging daily snapshot: $tag"
+      git tag "$tag" || echo "Tag $tag already exists"
+      git push origin "$tag"
     fi
 
     debug echo "Processing ${repo} complete."
