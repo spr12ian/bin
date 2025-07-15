@@ -5,8 +5,8 @@ set -euo pipefail
 
 AUTO_PUSH_WIP=${GITHUB_AUTO_PUSH_WIP:-true}
 TAG_EOD=${GITHUB_TAG_EOD:-false}
-REPO_PREFIX=${GITHUB_REPO_PREFIX:-""}
 LOG_FILE=${GITHUB_LOG_FILE:-"focus_here.log"}
+REPO_PREFIX="${1:-}"
 
 [[ -n "$LOG_FILE" ]] && exec &> >(tee -a "$LOG_FILE")
 
@@ -22,7 +22,7 @@ setup_environment() {
 fetch_repos() {
   curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" |
     jq -r '.[].name' |
-    grep "^${REPO_PREFIX}"
+    grep "^${REPO_PREFIX}" || true
 }
 
 clone_or_update_repo() {
@@ -50,9 +50,9 @@ sync_repo() {
     return
   }
 
+  ensure_feature_branch
   handle_wip_changes "$repo"
   git fetch origin || echo "⚠️ Fetch failed for $repo"
-  ensure_feature_branch
   sync_with_remote "$repo"
   clean_ignored
   maybe_tag_eod "$repo"
