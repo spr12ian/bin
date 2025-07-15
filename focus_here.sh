@@ -1,143 +1,157 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Check if DEBUG is set to true
-if [[ "${DEBUG:-}" == "true" ]]; then
-  set -x # Enable debugging
-else
-  set +x # Disable debugging
-fi
+[[ "${DEBUG:-false}" == "true" ]] && set -x
 
-setup_github
+AUTO_PUSH_WIP=${GITHUB_AUTO_PUSH_WIP:-true}
+TAG_EOD=${GITHUB_TAG_EOD:-false}
+LOG_FILE=${GITHUB_LOG_FILE:-""}
+REPO_PREFIX="${1:-}"
 
-# List public repositories for a specific user
-# Filter for specific fields using jq
-# Assign results to array repos
-readarray -t repos < <(curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" | jq -r '.[].name')
+[[ -n "$LOG_FILE" ]] && exec &> >(tee -a "$LOG_FILE")
 
-# Get array length
-howManyRepos=${#repos[@]}
-
-if [ "${howManyRepos}" -gt 0 ]; then
-  debug echo "Number of repos: ${howManyRepos}"
-
+setup_environment() {
+  setup_github
   mkdir -p "${GITHUB_PROJECTS_DIR}"
   cd "${GITHUB_PROJECTS_DIR}" || {
     echo "ERROR: ${GITHUB_PROJECTS_DIR} not found"
     exit 1
   }
-  debug echo "Parent directory for GitHub repos: $(pwd)"
+}
 
-  # Loop through array
-  for repo in "${repos[@]}"; do
-    debug echo "Repository: ${repo}"
+fetch_repos() {
+  curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" |
+    jq -r '.[].name' |
+    grep "^${REPO_PREFIX}" || true
+}
 
-    if [ ! -d "${repo}" ]; then
-      echo "${GITHUB_PROJECTS_DIR}/${repo} does NOT exist, cloning ${repo}..."
-      # Try to clone the repository
-      if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
-        echo "Success: gh repo clone ${GITHUB_USER_NAME}/${repo}"
-      else
-        echo "ERROR: gh repo clone ${GITHUB_USER_NAME}/${repo} failed"
-      fi
+clone_or_update_repo() {
+  local repo=$1
+  if [[ ! -d "$repo" ]]; then
+    echo "$repo not found, cloning..."
+    if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
+      echo "✅ Cloned $repo"
     else
-      echo "Syncing ${GITHUB_PROJECTS_DIR}/${repo} ..."
-      pushd "${repo}" >/dev/null || {
-        echo "ERROR: pushd ${repo} failed"
-        continue
-      }
-      debug echo "Current directory: $(pwd)"
+      echo "❌ Failed to clone $repo"
+    fi
+  else
+    echo "📁 Updating $repo"
+    sync_repo "$repo"
+  fi
+}
 
-      # Check if this is a Git repository
-      if [ ! -d .git ]; then
-        echo "ERROR: Not a Git repository."
-        exit 1
-      fi
+sync_repo() {
+  local repo=$1
+  pushd "$repo" >/dev/null || return
 
-      # Check for unstaged changes
-      unstaged_changes=$(git diff --name-only)
+  [[ -d .git ]] || {
+    echo "❌ $repo is not a Git repository"
+    popd >/dev/null
+    return
+  }
 
-      # if [[ -n $unstaged_changes ]]; then
-      #   echo "Unstaged changes detected:"
-      #   echo "$unstaged_changes"
-      #   exit 1
-      # fi
+  ensure_feature_branch
+  handle_wip_changes "$repo"
+  git fetch origin || echo "⚠️ Fetch failed for $repo"
+  sync_with_remote "$repo"
+  clean_ignored
+  maybe_tag_eod "$repo"
 
-      # Check for staged changes
-      staged_changes=$(git diff --cached --name-only)
+  popd >/dev/null
+}
 
-      # if [[ -n $staged_changes ]]; then
-      #   echo "The following files are in the staging area:"
-      #   echo "$staged_changes"
-      #   exit 1
-      # fi
+handle_wip_changes() {
+  local repo=$1
 
-      if [[ -n "$unstaged_changes" || -n "$staged_changes" ]]; then
-        echo "🔧 Detected uncommitted work in $repo"
+  local unstaged staged
+  unstaged=$(git diff --name-only)
+  staged=$(git diff --cached --name-only)
 
-        if [[ "${AUTO_PUSH_WIP:-true}" == "true" ]]; then
-          echo "💾 Saving WIP changes"
-          git add -A
-          git commit -m "WIP: auto-commit on $(date +%F_%T)" || echo "Nothing to commit"
-          git push || echo "⚠️ Push failed for $repo"
-        else
-          echo "❗ AUTO_PUSH_WIP is disabled; skipping WIP commit"
-        fi
-      fi
+  if [[ -n "$unstaged" || -n "$staged" ]]; then
+    echo "🔧 Uncommitted work in $repo"
+    if [[ "$AUTO_PUSH_WIP" == "true" ]]; then
+      git add -A
+      git commit -m "WIP: auto-commit on $(date +%F_%T)" || echo "ℹ️ Nothing to commit"
+      git push || echo "⚠️ Push failed"
+    else
+      echo "❗ AUTO_PUSH_WIP is disabled; skipping commit"
+    fi
+  fi
+}
 
+ensure_feature_branch() {
+  local current_branch
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-      # Try to fetch the repository
-      if ! git fetch origin; then
-        echo "ERROR: 'git fetch origin' failed"
-        exit 1
-      fi
+  if [[ "$current_branch" == "main" ]]; then
+    local new_branch="feat/auto-${GITHUB_USER_NAME}-$(date +%F)"
+    echo "🌿 Switching to $new_branch"
 
-      # Get the current branch name
-      current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-      if [[ "$current_branch" == "main" ]]; then
-        new_branch="feat/auto-${GITHUB_USER_NAME}-$(date +%F)"
-        echo "Switching to feature branch: $new_branch"
-        git checkout -b "$new_branch" || git checkout "$new_branch"
-        current_branch="$new_branch"
-      fi
-
-      local_commit=$(git rev-parse "$current_branch")
-      remote_commit=$(git rev-parse "origin/$current_branch")
-      base_commit=$(git merge-base "$current_branch" "origin/$current_branch")
-
-      # Check synchronization status
-      if [[ "$local_commit" == "$remote_commit" ]]; then
-        debug echo "The local branch is up to date with the remote."
-      elif [[ "$local_commit" == "$base_commit" ]]; then
-        debug echo "The local branch is behind the remote. Trying to pull changes."
-        # Try to pull the repository
-        if git pull; then
-          echo "Successfully pulled ${repo}"
-        else
-          echo "ERROR: Pulling ${repo} failed"
-        fi
-      elif [[ "$remote_commit" == "$base_commit" ]]; then
-        echo "The local branch is ahead of the remote. You need to push changes."
-      else
-        echo "The local and remote branches have diverged. Manual reconciliation needed."
-      fi
-
-      # Clean up ignored files if applicable
-      if type remove_ignored_files_from_git >/dev/null 2>&1; then
-        remove_ignored_files_from_git
-      else
-        echo "remove_ignored_files_from_git command not found, skipping..."
-      fi
-      popd >/dev/null || {
-        echo "ERROR: Could not return to previous directory"
-        exit 1
-      }
-      debug echo "Current directory: $(pwd)"
+    if git show-ref --verify --quiet "refs/heads/$new_branch"; then
+      git checkout "$new_branch"
+    else
+      git checkout -b "$new_branch"
     fi
 
-    debug echo "Processing ${repo} complete."
+    if ! git rev-parse --quiet --verify "origin/$new_branch" >/dev/null; then
+      git push -u origin "$new_branch"
+    fi
+  fi
+}
+
+sync_with_remote() {
+  local repo=$1
+  local branch
+  branch=$(git rev-parse --abbrev-ref HEAD)
+
+  local local_commit remote_commit base_commit
+  local_commit=$(git rev-parse "$branch")
+  remote_commit=$(git rev-parse --quiet --verify "origin/$branch" 2>/dev/null || echo "")
+  base_commit=$(git merge-base "$branch" "origin/$branch" 2>/dev/null || echo "")
+
+  if [[ "$local_commit" == "$remote_commit" ]]; then
+    echo "✅ $branch is up to date"
+  elif [[ "$local_commit" == "$base_commit" ]]; then
+    echo "⬇️ $branch is behind; pulling"
+    git pull || echo "❌ Pull failed"
+  elif [[ "$remote_commit" == "$base_commit" ]]; then
+    echo "⬆️ $branch is ahead; push needed"
+  else
+    echo "⚠️ Branch $branch has diverged from origin; manual resolution required"
+  fi
+}
+
+maybe_tag_eod() {
+  local repo=$1
+  if [[ "$TAG_EOD" == "true" ]]; then
+    local tag="eod-${repo}-$(date +%F)"
+    echo "🏷️ Tagging snapshot: $tag"
+    git tag -f "$tag" || echo "⚠️ Failed to tag $tag"
+    git push origin "$tag" || echo "⚠️ Failed to push tag $tag"
+  fi
+}
+
+clean_ignored() {
+  if command -v remove_ignored_files_from_git >/dev/null; then
+    remove_ignored_files_from_git
+  fi
+}
+
+main() {
+  setup_environment
+
+  mapfile -t repos < <(fetch_repos)
+
+  if [[ "${#repos[@]}" -eq 0 ]]; then
+    echo "❌ No matching repos found for ${GITHUB_USER_NAME} with prefix '${REPO_PREFIX}'"
+    exit 0
+  fi
+
+  echo "📦 Found ${#repos[@]} repos to process"
+
+  for repo in "${repos[@]}"; do
+    clone_or_update_repo "$repo"
   done
-else
-  echo "No GitHub repos found for ${GITHUB_USER_NAME}"
-fi
+}
+
+main "$@"
