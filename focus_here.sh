@@ -5,6 +5,10 @@ set -euo pipefail
 
 AUTO_PUSH_WIP=${GITHUB_AUTO_PUSH_WIP:-true}
 TAG_EOD=${GITHUB_TAG_EOD:-false}
+REPO_PREFIX=${GITHUB_REPO_PREFIX:-""}
+LOG_FILE=${GITHUB_LOG_FILE:-""}
+
+[[ -n "$LOG_FILE" ]] && exec &> >(tee -a "$LOG_FILE")
 
 setup_environment() {
   setup_github
@@ -17,7 +21,8 @@ setup_environment() {
 
 fetch_repos() {
   curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" |
-    jq -r '.[].name'
+    jq -r '.[].name' |
+    grep "^${REPO_PREFIX}"
 }
 
 clone_or_update_repo() {
@@ -58,9 +63,7 @@ sync_repo() {
 handle_wip_changes() {
   local repo=$1
 
-  local unstaged
-  local staged
-
+  local unstaged staged
   unstaged=$(git diff --name-only)
   staged=$(git diff --cached --name-only)
 
@@ -140,8 +143,8 @@ main() {
   mapfile -t repos < <(fetch_repos)
 
   if [[ "${#repos[@]}" -eq 0 ]]; then
-    echo "❌ No GitHub repos found for ${GITHUB_USER_NAME}"
-    exit 1
+    echo "❌ No matching repos found for ${GITHUB_USER_NAME} with prefix '${REPO_PREFIX}'"
+    exit 0
   fi
 
   echo "📦 Found ${#repos[@]} repos to process"
