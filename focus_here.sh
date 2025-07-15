@@ -77,10 +77,10 @@ sync_repo() {
     return 1
   }
 
+  ensure_feature_branch
   handle_wip_changes "$repo"
   git fetch origin &>/dev/null || echo "⚠️ Fetch failed"
 
-  ensure_feature_branch
   sync_with_remote "$repo"
   maybe_tag_eod "$repo"
   clean_ignored
@@ -177,8 +177,12 @@ main() {
   local -i running_jobs=0
   for repo in "${repos[@]}"; do
     (
+      set +e
       echo "▶️ $repo"
-      clone_or_update_repo "$repo" || echo "❌ $repo failed"
+      clone_or_update_repo "$repo"
+      status=$?
+      [[ $status -ne 0 ]] && echo "❌ $repo failed"
+      exit 0
     ) &
     ((running_jobs++))
 
@@ -188,9 +192,9 @@ main() {
     fi
   done
 
-  wait || true  # Never abort on a background error
-  echo "✅ Done"
+  wait || true  # Always allow final summary to run
 
+  echo "✅ Done"
   echo
   echo "📊 Summary:"
   echo "  Total:   $repo_total"
