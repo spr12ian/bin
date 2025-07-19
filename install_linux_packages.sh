@@ -13,6 +13,7 @@ install_apt_package graphviz      # Graphviz
 install_apt_package jq            # Command_line JSON processor
 install_apt_package moreutils     # Additional Unix utilities (e.g. sponge)
 install_asdf                      # Version Manager & LTS node.js
+install_npm                       # Version Manager & LTS node.js
 install_openssh_server            # SSH server for remote access
 install_pipx                      # Install & run Python apps in isolated environments
 install_apt_package poppler-utils # PDF utilities

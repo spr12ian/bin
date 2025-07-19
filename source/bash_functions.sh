@@ -658,6 +658,40 @@ _vcode_autocomplete() {
   fi
 }
 
+verify_env() {
+  log_function_start
+
+  local errors=0
+
+  log_info "🔍 Verifying WSL environment..."
+
+  if ! grep -qiE 'microsoft|wsl' /proc/version; then
+    log_error "Not running inside WSL."
+    ((errors++))
+  else
+    log_info "✅ Running inside WSL."
+  fi
+
+  for cmd in node npm make; do
+    local resolved
+    resolved=$(resolve_command_path "$cmd" 2>/dev/null)
+    if [[ "$resolved" =~ ^/mnt/ ]]; then
+      log_error "❌ '$cmd' is from Windows: $resolved"
+      ((errors++))
+    else
+      log_info "✅ '$cmd' is Linux-native: $resolved"
+    fi
+  done
+
+  if [[ "$errors" -eq 0 ]]; then
+    log_info "✅ Environment OK"
+  else
+    log_warn "⚠️  Environment has issues — fix above items."
+  fi
+
+  log_function_finish
+}
+
 main() {
   # Only enforce if needed:
   stop_if_executed_directly
