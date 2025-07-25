@@ -30,7 +30,15 @@ log_warn() { echo "⚠️  $*" >&2; }
 log_info() { echo "ℹ️  $*"; }
 
 debug() {
-  if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then "$@"; else "$@" &>/dev/null; fi
+  if [[ $# -eq 0 ]]; then
+    return 0
+  fi
+
+  if [[ "${DEBUG:-}" =~ ^([Tt]rue|1)$ ]]; then
+    "$@"
+  else
+    "$@" &>/dev/null
+  fi
 }
 
 # Function-level debug logging with indentation

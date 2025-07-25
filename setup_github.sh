@@ -15,11 +15,6 @@ else
   exit 1
 fi
 
-# Enable optional debug output
-debug() {
-  [[ "${DEBUG:-}" == "true" ]] && "$@"
-}
-
 # ─── Sanity Checks ─────────────────────────────────────────────────────────────
 : "${GITHUB_PROJECTS_DIR:?Environment variable GITHUB_PROJECTS_DIR is NOT set}"
 : "${GITHUB_USER_EMAIL:?Environment variable GITHUB_USER_EMAIL is NOT set}"
