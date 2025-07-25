@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Check if DEBUG is set to true
+# ─────────────────────────────────────────────
+# Optional debugging
+# ─────────────────────────────────────────────
 if [[ "${DEBUG:-}" == "true" ]]; then
-  set -x # Enable debugging
-else
-  set +x # Disable debugging
+  set -x
 fi
 
 # ─────────────────────────────────────────────
@@ -20,15 +20,15 @@ else
   exit 1
 fi
 
+# ─────────────────────────────────────────────
+# Lockfile cleanup
+# ─────────────────────────────────────────────
 LOCKFILE="$HOME/.gitconfig.lock"
-
 if [[ -e "$LOCKFILE" ]]; then
   echo "⚠️ Lock file exists: $LOCKFILE"
   ls -l "$LOCKFILE"
-
-  # Check if any git process is using it
   if lsof "$LOCKFILE" >/dev/null 2>&1; then
-    echo "❌ The lock file is currently in use by another process. Not removing."
+    echo "❌ The lock file is currently in use. Not removing."
     exit 1
   else
     echo "✅ Lock file appears stale. Removing..."
@@ -38,115 +38,128 @@ else
   echo "✅ No lock file present."
 fi
 
+# ─────────────────────────────────────────────
+# Run Git setup (safe)
+# ─────────────────────────────────────────────
 setup_github
 
-# List public repositories for a specific user
-# Filter for specific fields using jq
-# Assign results to array repos
-readarray -t repos < <(curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" | jq -r '.[].name')
+# ─────────────────────────────────────────────
+# Fetch GitHub repositories
+# ─────────────────────────────────────────────
+readarray -t repos < <(
+  curl -s "https://api.github.com/users/${GITHUB_USER_NAME}/repos" |
+    jq -r '.[].name'
+)
 
-# Get array length
 howManyRepos=${#repos[@]}
+if [[ $howManyRepos -eq 0 ]]; then
+  echo "⚠️ No GitHub repos found for ${GITHUB_USER_NAME}"
+  exit 0
+fi
 
-if [ "${howManyRepos}" -gt 0 ]; then
-  debug echo "Number of repos: ${howManyRepos}"
+echo "🔍 Found $howManyRepos repositories for ${GITHUB_USER_NAME}"
 
-  mkdir -p "${GITHUB_PROJECTS_DIR}"
-  cd "${GITHUB_PROJECTS_DIR}" || {
-    echo "ERROR: ${GITHUB_PROJECTS_DIR} not found"
-    exit 1
-  }
-  debug echo "Parent directory for GitHub repos: $(pwd)"
+mkdir -p "${GITHUB_PROJECTS_DIR}"
+cd "${GITHUB_PROJECTS_DIR}" || {
+  echo "❌ Cannot cd to ${GITHUB_PROJECTS_DIR}"
+  exit 1
+}
 
-  # Loop through array
-  for repo in "${repos[@]}"; do
-    debug echo "Repository: ${repo}"
+# ─────────────────────────────────────────────
+# Clone or sync each repo
+# ─────────────────────────────────────────────
+errors=0
 
-    if [ ! -d "${repo}" ]; then
-      echo "${GITHUB_PROJECTS_DIR}/${repo} does NOT exist, cloning ${repo}..."
-      # Try to clone the repository
-      if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
-        echo "Success: gh repo clone ${GITHUB_USER_NAME}/${repo}"
-      else
-        echo "ERROR: gh repo clone ${GITHUB_USER_NAME}/${repo} failed"
-      fi
+for repo in "${repos[@]}"; do
+  echo "─────────────────────────────────────────────"
+  echo "🔧 Processing ${repo}"
+
+  if [[ ! -d "$repo" ]]; then
+    echo "📥 Cloning ${repo}..."
+    if gh repo clone "${GITHUB_USER_NAME}/${repo}"; then
+      echo "✅ Cloned ${repo}"
     else
-      echo "Syncing ${GITHUB_PROJECTS_DIR}/${repo} ..."
-      pushd "${repo}" >/dev/null || {
-        echo "ERROR: pushd ${repo} failed"
-        continue
-      }
-      debug echo "Current directory: $(pwd)"
+      echo "❌ Failed to clone ${repo}"
+      ((errors++))
+      continue
+    fi
+  else
+    echo "🔄 Syncing ${repo}..."
+    pushd "$repo" >/dev/null || {
+      echo "❌ Failed to enter ${repo}"
+      ((errors++))
+      continue
+    }
 
-      # Check if this is a Git repository
-      if [ ! -d .git ]; then
-        echo "ERROR: Not a Git repository."
-        exit 1
-      fi
-
-      # Check for unstaged changes
-      unstaged_changes=$(git diff --name-only)
-
-      if [[ -n $unstaged_changes ]]; then
-        echo "Unstaged changes detected:"
-        echo "$unstaged_changes"
-        exit 1
-      fi
-
-      # Check for staged changes
-      staged_changes=$(git diff --cached --name-only)
-
-      if [[ -n $staged_changes ]]; then
-        echo "The following files are in the staging area:"
-        echo "$staged_changes"
-        exit 1
-      fi
-
-      # Try to fetch the repository
-      if ! git fetch origin; then
-        echo "ERROR: 'git fetch origin' failed"
-        exit 1
-      fi
-
-      # Get the current branch name
-      current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-      local_commit=$(git rev-parse "$current_branch")
-      remote_commit=$(git rev-parse "origin/$current_branch")
-      base_commit=$(git merge-base "$current_branch" "origin/$current_branch")
-
-      # Check synchronization status
-      if [[ "$local_commit" == "$remote_commit" ]]; then
-        debug echo "The local branch is up to date with the remote."
-      elif [[ "$local_commit" == "$base_commit" ]]; then
-        debug echo "The local branch is behind the remote. Trying to pull changes."
-        # Try to pull the repository
-        if git pull; then
-          echo "Successfully pulled ${repo}"
-        else
-          echo "ERROR: Pulling ${repo} failed"
-        fi
-      elif [[ "$remote_commit" == "$base_commit" ]]; then
-        echo "The local branch is ahead of the remote. You need to push changes."
-      else
-        echo "The local and remote branches have diverged. Manual reconciliation needed."
-      fi
-
-      # Clean up ignored files if applicable
-      if type remove_ignored_files_from_git >/dev/null 2>&1; then
-        remove_ignored_files_from_git
-      else
-        echo "remove_ignored_files_from_git command not found, skipping..."
-      fi
-      popd >/dev/null || {
-        echo "ERROR: Could not return to previous directory"
-        exit 1
-      }
-      debug echo "Current directory: $(pwd)"
+    if [[ ! -d .git ]]; then
+      echo "❌ ${repo} is not a Git repository — skipping"
+      popd >/dev/null
+      ((errors++))
+      continue
     fi
 
-    debug echo "Processing ${repo} complete."
-  done
+    if [[ -n $(git diff --name-only) ]]; then
+      echo "⚠️ Unstaged changes in ${repo}, skipping"
+      popd >/dev/null
+      ((errors++))
+      continue
+    fi
+
+    if [[ -n $(git diff --cached --name-only) ]]; then
+      echo "⚠️ Staged but uncommitted changes in ${repo}, skipping"
+      popd >/dev/null
+      ((errors++))
+      continue
+    fi
+
+    if ! git fetch origin; then
+      echo "❌ git fetch failed for ${repo}"
+      popd >/dev/null
+      ((errors++))
+      continue
+    fi
+
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    local_commit=$(git rev-parse "$current_branch")
+    remote_commit=$(git rev-parse "origin/$current_branch")
+    base_commit=$(git merge-base "$current_branch" "origin/$current_branch")
+
+    if [[ "$local_commit" == "$remote_commit" ]]; then
+      echo "✅ ${repo} is up to date"
+    elif [[ "$local_commit" == "$base_commit" ]]; then
+      echo "⬇️  ${repo} is behind — pulling"
+      if git pull; then
+        echo "✅ Pulled ${repo}"
+      else
+        echo "❌ Pull failed for ${repo}"
+        ((errors++))
+      fi
+    elif [[ "$remote_commit" == "$base_commit" ]]; then
+      echo "⬆️  ${repo} is ahead of remote — push required"
+    else
+      echo "⚠️ ${repo} has diverged — manual reconciliation required"
+    fi
+
+    if command -v remove_ignored_files_from_git >/dev/null; then
+      remove_ignored_files_from_git
+    fi
+
+    popd >/dev/null || {
+      echo "❌ Could not return to parent directory"
+      ((errors++))
+      continue
+    }
+  fi
+done
+
+# ─────────────────────────────────────────────
+# Final report
+# ─────────────────────────────────────────────
+echo "─────────────────────────────────────────────"
+if [[ $errors -eq 0 ]]; then
+  echo "✅ All repositories processed successfully"
+  exit 0
 else
-  echo "No GitHub repos found for ${GITHUB_USER_NAME}"
+  echo "⚠️ $errors repositories had issues"
+  exit 1
 fi
