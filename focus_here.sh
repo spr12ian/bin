@@ -8,6 +8,18 @@ else
   set +x # Disable debugging
 fi
 
+# ─────────────────────────────────────────────
+# Ensure bash_functions are sourced
+# ─────────────────────────────────────────────
+BASH_FUNCTIONS="$HOME/.symlinks/source/bash_functions"
+if [[ -f "$BASH_FUNCTIONS" ]]; then
+  # shellcheck source=/dev/null
+  source "$BASH_FUNCTIONS"
+else
+  echo "❌ Missing $BASH_FUNCTIONS — aborting."
+  exit 1
+fi
+
 LOCKFILE="$HOME/.gitconfig.lock"
 
 if [[ -e "$LOCKFILE" ]]; then

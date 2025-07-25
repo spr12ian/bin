@@ -3,6 +3,18 @@ set -euo pipefail
 
 echo "$0 started"
 
+# ─────────────────────────────────────────────────────────────
+# Ensure required functions are available
+# ─────────────────────────────────────────────────────────────
+BASH_FUNCTIONS="$HOME/.symlinks/source/bash_functions"
+if [[ -f "$BASH_FUNCTIONS" ]]; then
+  # shellcheck source=/dev/null
+  source "$BASH_FUNCTIONS"
+else
+  echo "❌ Missing $BASH_FUNCTIONS — aborting."
+  exit 1
+fi
+
 # Enable optional debug output
 debug() {
   [[ "${DEBUG:-}" == "true" ]] && "$@"
