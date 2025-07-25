@@ -1,55 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "$0" started
+echo "$0 started"
 
-# Check if DEBUG is set to true
-if [[ "${DEBUG:-}" == "true" ]]; then
-  set -x # Enable debugging
-else
-  set +x # Disable debugging
-fi
+# Enable optional debug output
+debug() {
+  [[ "${DEBUG:-}" == "true" ]] && "$@"
+}
 
-setup_git
+# ─── Sanity Checks ─────────────────────────────────────────────────────────────
+: "${GITHUB_PROJECTS_DIR:?Environment variable GITHUB_PROJECTS_DIR is NOT set}"
+: "${GITHUB_USER_EMAIL:?Environment variable GITHUB_USER_EMAIL is NOT set}"
+: "${GITHUB_USER_NAME:?Environment variable GITHUB_USER_NAME is NOT set}"
 
-if [ -z "${GITHUB_PROJECTS_DIR}" ]; then
-  echo "Environment variable GITHUB_PROJECTS_DIR is NOT set"
-  exit 1
-fi
-
-if [ -z "${GITHUB_USER_EMAIL}" ]; then
-  echo "Environment variable GITHUB_USER_EMAIL is NOT set"
-  exit 1
-fi
-
-if [ -z "${GITHUB_USER_NAME}" ]; then
-  echo "Environment variable GITHUB_USER_NAME is NOT set"
-  exit 1
-fi
-
-git config --global user.email "${GITHUB_USER_EMAIL}"
-git config --global user.name "${GITHUB_USER_NAME}"
-
-debug echo "GitHub configurations set successfully."
+# ─── Git Identity Config ────────────────────────────────────────────────────────
+set_git_config_if_needed user.email "$GITHUB_USER_EMAIL"
+set_git_config_if_needed user.name  "$GITHUB_USER_NAME"
 
 debug git config --list
 
+# ─── SSH Key Setup ──────────────────────────────────────────────────────────────
+SSH_KEY=~/.ssh/id_ed25519
 GITHUB_HOST_NAME=$(hostnamectl --static)
+SSH_COMMENT="GitHub-${GITHUB_HOST_NAME}"
 
-if grep -q "GitHub-${GITHUB_HOST_NAME}" ~/.ssh/id_ed25519.pub 2>/dev/null; then
-  debug echo "GitHub-${GITHUB_HOST_NAME} ssh key exists"
-  debug ssh-keygen -lf ~/.ssh/id_ed25519.pub
-  debug cat ~/.ssh/id_ed25519.pub
+if [[ -f "${SSH_KEY}.pub" ]] && grep -q "$SSH_COMMENT" "${SSH_KEY}.pub"; then
+  echo "ℹ️ SSH key already exists with comment '$SSH_COMMENT'"
+  debug ssh-keygen -lf "${SSH_KEY}.pub"
 else
-  echo "Generating an ed25519 SSH key for GitHub with no passphrase:"
-  ssh-keygen -t ed25519 -C "GitHub-${GITHUB_HOST_NAME}" -f ~/.ssh/id_ed25519 -N ""
+  echo "🔑 Generating a new ed25519 SSH key with comment '$SSH_COMMENT'"
+  ssh-keygen -t ed25519 -C "$SSH_COMMENT" -f "$SSH_KEY" -N ""
 
-  echo "Add the SSH key to GitHub by copying its contents:"
-  cat ~/.ssh/id_ed25519.pub
+  echo "📋 Add this SSH public key to GitHub:"
+  cat "${SSH_KEY}.pub"
 
-  ssh-keygen -lf ~/.ssh/id_ed25519.pub
+  ssh-keygen -lf "${SSH_KEY}.pub"
 fi
 
-debug ssh -T git@github.com
+# ─── Test SSH Connection ────────────────────────────────────────────────────────
+debug ssh -T git@github.com || true
 
-echo "$0" finished
+echo "$0 finished"

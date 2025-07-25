@@ -1,29 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "$0" started
+echo "$0 started"
 
-# Check if DEBUG is set to true
-if [[ "${DEBUG:-}" == "true" ]]; then
-    set -x # Enable debugging
-else
-    set +x # Disable debugging
-fi
+# ─── Debug Helper ───────────────────────────────────────────────────────────────
+debug() {
+  [[ "${DEBUG:-}" == "true" ]] && "$@"
+}
 
-# Check if git is installed
+# ─── Check Dependencies ────────────────────────────────────────────────────────
 if ! command -v git &>/dev/null; then
-    echo "Git is not installed. Please install Git and try again."
-    exit 1
+  echo "❌ Git is not installed. Please install Git and try again."
+  exit 1
 fi
 
-debug git version
+debug git --version
 
-git config --global core.autocrlf input
-git config --global core.fileMode false
-git config --global core.ignoreCase false
-git config --global init.defaultBranch main
-git config --global pull.rebase merges
+# ─── Git Config Defaults ────────────────────────────────────────────────────────
+set_git_config_if_needed core.autocrlf        input
+set_git_config_if_needed core.fileMode        false
+set_git_config_if_needed core.ignoreCase      false
+set_git_config_if_needed init.defaultBranch   main
+set_git_config_if_needed pull.rebase          merges
 
-debug echo "Git configurations set successfully."
+debug git config --list
 
-echo "$0" finished
+echo "$0 finished"

@@ -577,6 +577,21 @@ run_local() {
   }
 }
 
+# ─── Idempotent Git Config Setter ──────────────────────────────────────────────
+set_git_config_if_needed() {
+  local key="$1"
+  local expected="$2"
+  local actual
+  actual=$(git config --global --get "$key" || true)
+
+  if [[ "$actual" != "$expected" ]]; then
+    git config --global "$key" "$expected"
+    echo "✅ Set $key to '$expected'"
+  else
+    echo "ℹ️ $key already set to '$expected'"
+  fi
+}
+
 source_if_exists() {
   local file="$1"
   if [ -f "$file" ]; then

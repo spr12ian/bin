@@ -8,6 +8,24 @@ else
   set +x # Disable debugging
 fi
 
+LOCKFILE="$HOME/.gitconfig.lock"
+
+if [[ -e "$LOCKFILE" ]]; then
+  echo "⚠️ Lock file exists: $LOCKFILE"
+  ls -l "$LOCKFILE"
+
+  # Check if any git process is using it
+  if lsof "$LOCKFILE" >/dev/null 2>&1; then
+    echo "❌ The lock file is currently in use by another process. Not removing."
+    exit 1
+  else
+    echo "✅ Lock file appears stale. Removing..."
+    rm -v "$LOCKFILE"
+  fi
+else
+  echo "✅ No lock file present."
+fi
+
 setup_github
 
 # List public repositories for a specific user
