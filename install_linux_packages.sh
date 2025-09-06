@@ -16,12 +16,14 @@ install_apt_package poppler-utils   # PDF utilities
 install_apt_package shellcheck      # Shell script analysis tool
 install_apt_package sqlite3         # Sql command line
 install_apt_package tesseract_ocr   # Optical Character Recognition
+install_apt_package unzip           # Archive extraction tool, used by rclone
 install_asdf                        # Version Manager & LTS node.js
 install_gh                          # GitHub CLI for managing GitHub repositories
 install_npm                         # Version Manager & LTS node.js
 install_openssh_server              # SSH server for remote access
 install_pipx                        # Install & run Python apps in isolated environments
 install_python                      # Python programming language
+install_rclone                      # Manage cloud storage
 install_rust                        # Rust programming language
 install_snap_packages               # Snap package manager
 install_vs_code                     # Visual Studio Code for code editing
