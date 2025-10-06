@@ -8,12 +8,14 @@ setup_symbolic_links   # Create symbolic links for these commands to work
                        # Until they are all functions
 
 install_apt_package age             # Secure file encryption
+install_apt_package bats            # Bash Automated Testing System
 install_apt_package graphviz        # Graphviz
 install_apt_package jq              # Command_line JSON processor
 install_apt_package moreutils       # Additional Unix utilities (e.g. sponge)
 install_apt_package node-typescript # Additional Unix utilities (e.g. sponge)
 install_apt_package poppler-utils   # PDF utilities
 install_apt_package shellcheck      # Shell script analysis tool
+install_apt_package shfmt           # Shell script formatter
 install_apt_package sqlite3         # Sql command line
 install_apt_package tesseract_ocr   # Optical Character Recognition
 install_apt_package unzip           # Archive extraction tool, used by rclone
